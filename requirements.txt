@@ -2,3 +2,8 @@ tensorflow
 keras 
 albumentations
 opencv-python
+imutils
+numpy
+scikit-learn
+wandb
+tqdm

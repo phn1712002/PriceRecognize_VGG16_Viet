@@ -1,1 +1,39 @@
-
+{
+    "config_wandb": {
+        "using": false,
+        "api_key": "",
+        "project": "",
+        "name": "",
+        "sync_tensorboard": false
+    },
+    "config_model": {
+        "name": "VGG16",
+        "num_layers": 2, 
+        "hidden_layers": 4096,   
+        "rate_dropout": 0.5,
+        "image_size": [128, 128, 3]
+    },
+    "config_dataset": {
+        "batch_size_train": 8,  
+        "batch_size_dev": 8,
+        "using_augments": true,
+        "config_augments": {
+            "Rotate": { "limit": 90, "p" : 0.5 }
+        }         
+    },
+    "config_opt": {
+        "learning_rate": 0.0001
+    },
+    "config_other": {
+        "warning": false,
+        "summary": true
+    },
+    "config_train": {
+        "epochs": 5,
+        "checkpoint": {
+            "monitor": "val_loss",
+            "mode": "auto",
+            "verbose": 1
+        }
+    }
+}

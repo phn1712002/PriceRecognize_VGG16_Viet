@@ -11,3 +11,6 @@ Dataset/train/*
 Dataset/dev/*
 Dataset/test/*
 Dataset/raw/*
+
+# TEST
+test.*
