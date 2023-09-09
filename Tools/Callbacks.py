@@ -3,7 +3,7 @@ from Callbacks.WandB import CustomCallbacksWandB
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from wandb.keras import WandbCallback
 
-def CreateCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_dataset, pipeline):
+def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_dataset, pipeline):
     NAME_TIME = time.strftime("%Y%m%d-%H%M%S-")
     tensorBoard_callbacks = TensorBoard(log_dir=PATH_TENSORBOARD)
     checkpoint_callbacks = ModelCheckpoint(filepath=PATH_LOGS + NAME_TIME + 'weights-{epoch:03d}.h5', save_weights_only=True, **config['config_train']['checkpoint'])

@@ -4,7 +4,9 @@ from Dataset.CreateDataset import PriceRecognize_Dataset_Vietnamese
 from Architecture.Pipeline import PriceRecognize_VGG16
 from Optimizers.OptimizersVGG16 import CustomOptimizers
 from Tools.Json import loadJson
-from Tools.Callbacks import CreateCallbacks
+from Tools.Callbacks import createCallbacks
+from Tools.Folder import createFolder
+
 
 # Environment Variables
 PATH_CONFIG = './config.json'
@@ -12,6 +14,12 @@ PATH_DATASET = './Dataset/'
 PATH_LOGS = './Checkpoint/logs/'
 PATH_TENSORBOARD = './Checkpoint/tensorboard/'
 PATH_TFLITE = './Checkpoint/export/'
+
+# Create Folder
+createFolder(PATH_LOGS)
+createFolder(PATH_TENSORBOARD)
+createFolder(PATH_TFLITE)
+
 
 # Argparse
 parser = argparse.ArgumentParser()
@@ -63,7 +71,7 @@ dev_dataset = PriceRecognize_VGG16(class_names=class_names,
 opt_VGG16 = CustomOptimizers(**config_opt)()
 
 # Callbacks
-callbacks_VGG16= CreateCallbacks(PATH_TENSORBOARD=PATH_TENSORBOARD, 
+callbacks_VGG16= createCallbacks(PATH_TENSORBOARD=PATH_TENSORBOARD, 
                                 PATH_LOGS=PATH_LOGS, 
                                 config=config, 
                                 train_dataset=train_dataset, 

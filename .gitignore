@@ -5,6 +5,7 @@ Venv/
 Checkpoint/logs/*
 Checkpoint/export/*
 Checkpoint/save/*
+Checkpoint/tensorboard/*
 
 # SAVE
 Dataset/train/*
@@ -14,3 +15,4 @@ Dataset/raw/*
 
 # TEST
 test.*
+__pycache__
