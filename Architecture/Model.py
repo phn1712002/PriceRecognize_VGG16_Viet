@@ -35,47 +35,47 @@ class VGG16(CustomModel):
 
         
     def build(self, summary=False):
-        #strategy = tf.distribute.MirroredStrategy()
-        #with strategy.scope():
-        input = Input(shape=self.image_size, name='input')
-        
-        # Transfer Learning
-        if self.transfer_learning:
-            model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
-        else: 
-            model_vgg16_conv = applications.VGG16(weights=None, include_top=False)
-        
-        # Đóng băng các layers
-        for layer in model_vgg16_conv.layers:
-            layer.trainable = False
+        strategy = tf.distribute.MirroredStrategy()
+        with strategy.scope():
+            input = Input(shape=self.image_size, name='input')
             
-        output_vgg16_conv = model_vgg16_conv(input)
-        
-        # Thêm vào các FC layers 
-        x = Flatten(name='flatten')(output_vgg16_conv)
-        
-        hidden_layers = None
-        rate_dropout = None
-        for i in range(0, self.num_layers):
+            # Transfer Learning
+            if self.transfer_learning:
+                model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
+            else: 
+                model_vgg16_conv = applications.VGG16(weights=None, include_top=False)
             
-            if isinstance(self.hidden_layers, list): 
-                if i > len(self.hidden_layers): hidden_layers = self.hidden_layers[-1]
-                else: hidden_layers = self.hidden_layers[i]
-            else: hidden_layers = self.hidden_layers
+            # Đóng băng các layers
+            for layer in model_vgg16_conv.layers:
+                layer.trainable = False
                 
-            if isinstance(self.rate_dropout, list): 
-                if i > len(self.rate_dropout): rate_dropout = self.rate_dropout[-1]
-                else: rate_dropout = self.rate_dropout[i]
-            else: rate_dropout = self.rate_dropout
+            output_vgg16_conv = model_vgg16_conv(input)
+            
+            # Thêm vào các FC layers 
+            x = Flatten(name='flatten')(output_vgg16_conv)
+            
+            hidden_layers = None
+            rate_dropout = None
+            for i in range(0, self.num_layers):
+                
+                if isinstance(self.hidden_layers, list): 
+                    if i > len(self.hidden_layers): hidden_layers = self.hidden_layers[-1]
+                    else: hidden_layers = self.hidden_layers[i]
+                else: hidden_layers = self.hidden_layers
+                    
+                if isinstance(self.rate_dropout, list): 
+                    if i > len(self.rate_dropout): rate_dropout = self.rate_dropout[-1]
+                    else: rate_dropout = self.rate_dropout[i]
+                else: rate_dropout = self.rate_dropout
 
-            x = Dense(hidden_layers, activation='relu', name=f'fc_{i + 1}')(x)
-            x = Dropout(rate_dropout, name=f'dropout_{i + 1}')(x)
-                
-                
-        output = Dense(self.num_lables, activation='softmax', name='output')(x)
-        
-        self.model = Model(inputs=input, outputs=output, name=self.name)
-        self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.Accuracy()])
+                x = Dense(hidden_layers, activation='relu', name=f'fc_{i + 1}')(x)
+                x = Dropout(rate_dropout, name=f'dropout_{i + 1}')(x)
+                    
+                    
+            output = Dense(self.num_lables, activation='softmax', name='output')(x)
+            
+            self.model = Model(inputs=input, outputs=output, name=self.name)
+            self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.Accuracy()])
         
         if summary:
             self.model.summary()
@@ -115,7 +115,7 @@ class VGG16(CustomModel):
             path_list = os.listdir(path)
             if len(path_list) > 0:
                 path_list = [path + name for name in path_list]
-                time = [datetime.fromtimestamp(os.path.getmtime(path)) for path in path_list]
+                time = [datetime.datetime.fromtimestamp(os.path.getmtime(path)) for path in path_list]
                 while not check_load:
                     nearest_time_index = time.index(max(time))
                     nearest_path = path_list[nearest_time_index]
@@ -153,10 +153,10 @@ class VGG16(CustomModel):
             
             # Save
             saveJson(path=path_json_config, data=config_model)
-            saveJson(path=path_json_class_names, data=config_class_names, encoding=None)  
+            saveJson(path=path_json_class_names, data=config_class_names)  
             tf.io.write_file(filename=path_tflite, contents=tflite_model)
             
             print(f"Export model to tflite filename:{path_tflite} and json:{path_json_config} - {path_json_class_names}")
         else:
             raise RuntimeError('Error path')
-        
+
