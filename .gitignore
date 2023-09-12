@@ -17,5 +17,9 @@ Dataset/raw/*
 wandb/*
 
 # TEST
+test/
 test.*
+
+
+# CACHE
 __pycache__

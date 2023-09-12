@@ -1,8 +1,8 @@
 import tensorflow as tf, os, datetime
 from keras import optimizers, losses, Model, Input, applications, metrics
 from keras.layers import Flatten, Dense, Dropout
-from keras.preprocessing.text import Tokenizer
-from Tools.Json import saveJson
+from keras.preprocessing import text
+from Tools.Json import saveJson, loadJson
 
 class CustomModel:
     def __init__(self, model=None, opt=None, loss=None):
@@ -12,7 +12,7 @@ class CustomModel:
 
 class VGG16(CustomModel):
     def __init__(self, 
-                 class_names:Tokenizer,
+                 class_names:text.Tokenizer,
                  name='VGG16',
                  transfer_learning=False,
                  num_layers=2,
@@ -43,13 +43,7 @@ class VGG16(CustomModel):
                 model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
             else: 
                 model_vgg16_conv = applications.VGG16(weights=None, include_top=False)
-            
-            # Đóng băng các layers
-            """
-            for layer in model_vgg16_conv.layers:
-                layer.trainable = False
-            """
-              
+                     
             output_vgg16_conv = model_vgg16_conv(input)
             
             # Thêm vào các FC layers 
@@ -90,10 +84,17 @@ class VGG16(CustomModel):
                        callbacks=callbacks)
         
         return self
+       
+    def predict(self, image_input):
+        image_input_tf = tf.convert_to_tensor(image_input, dtype=tf.float32)
+        image_input_tf = self.standardizedImage(image_input_tf)
+        output_tf = self.model.predict_on_batch(image_input_tf)
+        output = self.decoderLable(output_tf)
+        return output
     
     def standardizedImage(self, image_tf):
-        image = tf.image.resize(image_tf, (self.image_size[0], self.image_size[1]))
-        image = tf.cast(image_tf/255.0, tf.float32)
+        image = tf.image.resize(image_tf, size=(self.image_size[0], self.image_size[1]))
+        image = tf.cast(image/255.0, tf.float32)
         return image
     
     def decoderLable(self, output_tf):
@@ -158,6 +159,54 @@ class VGG16(CustomModel):
             tf.io.write_file(filename=path_tflite, contents=tflite_model)
             
             print(f"Export model to tflite filename:{path_tflite} and json:{path_json_config} - {path_json_class_names}")
+            return VGG16_TFLite(path=path_export, name_file=self.name).build()
         else:
             raise RuntimeError('Error path')
 
+
+class VGG16_TFLite(VGG16):
+    def __init__(self, path='./Checkpoint/export/', name_file='VGG16'):
+        
+        self.name_file = name_file
+        self.path = path
+        
+        self.index_input = None
+        self.index_ouput = None
+        self.dtype_input = None
+        
+        if os.path.exists(path):
+            path_json_class_names = path + name_file + '_class_names.json'
+            path_json_config = path + name_file + '.json'
+            
+            config_model = loadJson(path=path_json_config)
+            config_class_names = loadJson(path=path_json_class_names)
+            class_names = text.tokenizer_from_json(config_class_names)
+            super().__init__(class_names=class_names, **config_model)
+        else:
+            raise RuntimeError('Model load error')
+    
+    def build(self):
+        self.model = tf.lite.Interpreter(model_path=self.path + self.name_file + '.tflite')
+        self.index_input = self.model.get_input_details()[0]['index']
+        self.dtype_input = self.model.get_input_details()[0]['dtype']
+        self.index_ouput = self.model.get_output_details()[0]['index']
+        return self
+    
+    def predict(self, image_input):
+        image_input_tf = tf.convert_to_tensor(image_input, dtype=tf.float32)
+        image_input_tf = super().standardizedImage(image_input_tf)
+        output_tf  = self.__invoke(image_input_tf)
+        output = super().decoderLable(output_tf)
+        return output
+    
+    def __invoke(self, input_tf):
+        model = self.model
+        input_tf = tf.expand_dims(input_tf, axis=0)
+        model.allocate_tensors()
+        model.set_tensor(self.index_input, tf.cast(input_tf, dtype=self.dtype_input))
+        model.invoke()
+        ouput = model.get_tensor(self.index_ouput)
+        tf_output = tf.convert_to_tensor(ouput)
+        return tf_output
+        
+        
