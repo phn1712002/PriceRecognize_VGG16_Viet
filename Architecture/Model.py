@@ -20,7 +20,7 @@ class VGG16(CustomModel):
                  rate_dropout=0.5,
                  image_size=(128, 128, 3),
                  opt=optimizers.Adam(), 
-                 loss=losses.CategoricalCrossentropy(from_logits=False)
+                 loss=losses.CategoricalCrossentropy(from_logits=True)
                  ):
         super().__init__(model=None, opt=opt, loss=loss)
         self.transfer_learning = transfer_learning
@@ -74,7 +74,7 @@ class VGG16(CustomModel):
             output = Dense(self.num_lables, activation='softmax', name='output')(x)
             
             self.model = Model(inputs=input, outputs=output, name=self.name)
-            self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.CategoricalAccuracy()])
+            self.model.compile(optimizer=self.opt, loss=self.loss)
         
         if summary:
             self.model.summary()
