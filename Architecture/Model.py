@@ -70,9 +70,9 @@ class VGG16(CustomModel):
                 x = Dropout(rate_dropout, name=f'dropout_{i + 1}')(x)
                     
                     
-            output = Dense(self.num_lables, activation='softmax', name='output', metrics=[metrics.CategoricalAccuracy()])(x)
+            output = Dense(self.num_lables, activation='softmax', name='output')(x)
             
-            self.model = Model(inputs=input, outputs=output, name=self.name)
+            self.model = Model(inputs=input, outputs=output, name=self.name, metrics=[metrics.CategoricalAccuracy()])
             self.model.compile(optimizer=self.opt, loss=self.loss)
         
         if summary:
