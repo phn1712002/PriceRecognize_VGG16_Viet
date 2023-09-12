@@ -26,7 +26,7 @@ class PriceRecognize_VGG16(VGG16):
     def loadImage(self, image_path):
         image = tf.io.read_file(image_path)
         image = tf.image.decode_png(image, channels=self.image_size[2])
-        image = tf.image.resize(image, (self.image_size[0], self.image_size[1]))
+        #image = tf.image.resize(image, (self.image_size[0], self.image_size[1]))
         return image
     
     def encoderLable(self, lable):
@@ -45,7 +45,8 @@ class PriceRecognize_VGG16(VGG16):
             lambda: tf.numpy_function(func=self.augmentsImage, inp=[image], Tout=tf.float32),
             lambda: image
             )
-        image = tf.cast(image/255.0, tf.float32)
+        #image = tf.cast(image/255.0, tf.float32)
+        image = super().(image)
         lable = tf.py_function(self.encoderLable, inp=[lable], Tout=tf.int32)
         return image, lable
     
