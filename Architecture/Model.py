@@ -39,7 +39,7 @@ class VGG16(CustomModel):
             input = Input(shape=self.image_size, name='input')
             
             # Transfer Learning
-            if self.transfer_learning:s
+            if self.transfer_learning:
                 model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
                 # Đóng băng các layers
                 for layer in model_vgg16_conv.layers:
@@ -70,7 +70,7 @@ class VGG16(CustomModel):
                 x = Dropout(rate_dropout, name=f'dropout_{i + 1}')(x)
                     
                     
-            output = Dense(self.num_lables, activation='softmax', name='output')(x)
+            output = Dense(self.num_lables, activation='softmax', name='output', metrics=[metrics.CategoricalAccuracy()])(x)
             
             self.model = Model(inputs=input, outputs=output, name=self.name)
             self.model.compile(optimizer=self.opt, loss=self.loss)
