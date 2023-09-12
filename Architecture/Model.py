@@ -39,8 +39,11 @@ class VGG16(CustomModel):
             input = Input(shape=self.image_size, name='input')
             
             # Transfer Learning
-            if self.transfer_learning:
+            if self.transfer_learning:s
                 model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
+                # Đóng băng các layers
+                for layer in model_vgg16_conv.layers:
+                    layer.trainable = False
             else: 
                 model_vgg16_conv = applications.VGG16(weights=None, include_top=False)
                      
