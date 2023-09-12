@@ -46,7 +46,7 @@ class PriceRecognize_VGG16(VGG16):
             lambda: image
             )
         #image = tf.cast(image/255.0, tf.float32)
-        image = super().(image)
+        image = super().standardizedImage(image)
         lable = tf.py_function(self.encoderLable, inp=[lable], Tout=tf.int32)
         return image, lable
     
