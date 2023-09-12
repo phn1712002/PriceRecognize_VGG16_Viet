@@ -17,10 +17,10 @@ class PriceRecognize_VGG16(VGG16):
             ])
             self.check_augments = tf.constant(True, dtype=tf.bool)
         
-    def augmentsImage(self, image=None, image_shape=None):
+    def augmentsImage(self, image=None):
         aug_data = self.transforms(image=image)
         aug_img = aug_data["image"]
-        aug_img = tf.image.resize(aug_img, size=image_shape)
+        aug_img = tf.image.resize(aug_img, (self.image_size[0], self.image_size[1]))
         return aug_img
     
     def loadImage(self, image_path):
@@ -39,11 +39,10 @@ class PriceRecognize_VGG16(VGG16):
      
     def mapProcessing(self, path, lable):
         image = self.loadImage(path)
-        image_shape = [image.shape[0], image.shape[1]]
 
         image = tf.cond(
             self.check_augments == True, 
-            lambda: tf.numpy_function(func=self.augmentsImage, inp=[image, image_shape], Tout=tf.float32),
+            lambda: tf.numpy_function(func=self.augmentsImage, inp=[image], Tout=tf.float32),
             lambda: image
             )
         image = tf.cast(image/255.0, tf.float32)
