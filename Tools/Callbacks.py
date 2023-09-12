@@ -19,13 +19,11 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_data
                 sync_tensorboard=config['config_wandb']['sync_tensorboard'],
                 config=config_update)
         checkpoint_WandB = CustomCallbacksWandB(pipeline=pipeline, path_logs=PATH_LOGS, dev_dataset=dev_dataset)
-        checkpoint_WandB_log = WandbCallback(training_data=train_dataset,
-                                            validation_data=dev_dataset,
-                                            save_model=False, 
+        checkpoint_WandB_log = WandbCallback(save_model=False, 
                                             save_graph=True, 
-                                            log_weights=True, 
-                                            log_gradients=True, 
-                                            log_evaluation=True)
+                                            log_weights=False, 
+                                            log_gradients=False, 
+                                            log_evaluation=False)
         callbacks_model.append(checkpoint_WandB)
         callbacks_model.append(checkpoint_WandB_log)
     
