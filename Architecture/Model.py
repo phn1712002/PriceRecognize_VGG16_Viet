@@ -74,7 +74,7 @@ class VGG16(CustomModel):
             output = Dense(self.num_lables, activation='softmax', name='output')(x)
             
             self.model = Model(inputs=input, outputs=output, name=self.name)
-            self.model.compile(optimizer=self.opt, loss=self.loss, metrics=["accuracy"])
+            self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.Accuracy()])
         
         if summary:
             self.model.summary()
