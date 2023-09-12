@@ -13,6 +13,9 @@ Dataset/dev/*
 Dataset/test/*
 Dataset/raw/*
 
+# WANDB
+wandb/*
+
 # TEST
 test.*
 __pycache__

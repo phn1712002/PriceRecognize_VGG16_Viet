@@ -1,5 +1,4 @@
 import tensorflow as tf, os, datetime
-from tqdm import tqdm
 from keras import optimizers, losses, Model, Input, applications, metrics
 from keras.layers import Flatten, Dense, Dropout
 from keras.preprocessing.text import Tokenizer
@@ -21,7 +20,7 @@ class VGG16(CustomModel):
                  rate_dropout=0.5,
                  image_size=(128, 128, 3),
                  opt=optimizers.Adam(), 
-                 loss=losses.CategoricalCrossentropy(from_logits=True)
+                 loss=losses.CategoricalCrossentropy(from_logits=False)
                  ):
         super().__init__(model=None, opt=opt, loss=loss)
         self.transfer_learning = transfer_learning
@@ -75,7 +74,7 @@ class VGG16(CustomModel):
             output = Dense(self.num_lables, activation='softmax', name='output')(x)
             
             self.model = Model(inputs=input, outputs=output, name=self.name)
-            self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.Accuracy()])
+            self.model.compile(optimizer=self.opt, loss=self.loss, metrics=["accuracy"])
         
         if summary:
             self.model.summary()
@@ -97,7 +96,7 @@ class VGG16(CustomModel):
     
     def decoderLable(self, output_tf):
         output_tf = tf.math.argmax(output_tf, axis=-1) 
-        output = self.class_names.sequences_to_texts([[output_tf.numpy()]])
+        output = self.class_names.sequences_to_texts([output_tf.numpy()])
         return output[0]
     
     def getConfig(self):

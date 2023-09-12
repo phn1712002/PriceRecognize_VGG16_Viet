@@ -29,7 +29,7 @@
         "summary": true
     },
     "config_train": {
-        "epochs": 5,
+        "epochs": 1,
         "checkpoint": {
             "monitor": "val_loss",
             "mode": "auto",

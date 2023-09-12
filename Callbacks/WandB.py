@@ -26,9 +26,9 @@ class CustomCallbacksWandB(Callback):
         Y = self.model.predict_on_batch(X)
         output = self.pipeline.decoderLable(Y)
         
-        image_output_wandb = wandb.Image(Y.numpy())
+        image_input_wandb = wandb.Image(X.numpy())
             
-        tableOutputPredict.add_data(epoch + 1, image_output_wandb, output)
+        tableOutputPredict.add_data(epoch + 1, image_input_wandb, output)
         wandb.log({'Predict': tableOutputPredict}) 
         
         
