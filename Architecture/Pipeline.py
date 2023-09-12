@@ -20,7 +20,7 @@ class PriceRecognize_VGG16(VGG16):
     def augmentsImage(self, image=None):
         aug_data = self.transforms(image=image)
         aug_img = aug_data["image"]
-        aug_img = tf.image.resize(aug_img, (self.image_size[0], self.image_size[1]))
+        #aug_img = tf.image.resize(aug_img, (self.image_size[0], self.image_size[1]))
         return aug_img
     
     def loadImage(self, image_path):
