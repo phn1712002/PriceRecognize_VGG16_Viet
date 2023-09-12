@@ -20,7 +20,7 @@ class VGG16(CustomModel):
                  rate_dropout=0.5,
                  image_size=(128, 128, 3),
                  opt=optimizers.Adam(), 
-                 loss=losses.CategoricalCrossentropy(from_logits=True)
+                 loss=losses.CategoricalCrossentropy(from_logits=False)
                  ):
         super().__init__(model=None, opt=opt, loss=loss)
         self.transfer_learning = transfer_learning
@@ -45,9 +45,11 @@ class VGG16(CustomModel):
                 model_vgg16_conv = applications.VGG16(weights=None, include_top=False)
             
             # Đóng băng các layers
+            """
             for layer in model_vgg16_conv.layers:
                 layer.trainable = False
-                
+            """
+              
             output_vgg16_conv = model_vgg16_conv(input)
             
             # Thêm vào các FC layers 
