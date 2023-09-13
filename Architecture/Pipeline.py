@@ -1,3 +1,4 @@
+import cv2
 import tensorflow as tf
 from Architecture.Model import VGG16
 from albumentations import Compose, RandomBrightnessContrast, HueSaturationValue, RandomContrast, Rotate
@@ -24,10 +25,10 @@ class PriceRecognize_VGG16(VGG16):
         return aug_img
     
     def loadImage(self, image_path):
-        image = tf.io.read_file(image_path)
-        image = tf.image.decode_png(image, channels=self.image_size[2])
-        image = tf.image.resize(image, (self.image_size[0], self.image_size[1]))
-        return image
+        image_path = image_path.numpy().decode()
+        image = cv2.imread(image_path)
+        image = cv2.resize(image, (self.image_size[0], self.image_size[1]), interpolation = cv2.INTER_AREA)
+        return tf.convert_to_tensor(image, dtype=tf.float32)
     
     def encoderLable(self, lable):
         lable = lable.numpy().decode()
@@ -38,15 +39,13 @@ class PriceRecognize_VGG16(VGG16):
         return tf.convert_to_tensor(lable, dtype=tf.int32)
      
     def mapProcessing(self, path, lable):
-        image = self.loadImage(path)
-
+        image = tf.py_function(func=self.loadImage, inp=[path], Tout=tf.float32)
         image = tf.cond(
             self.check_augments == True, 
             lambda: tf.numpy_function(func=self.augmentsImage, inp=[image], Tout=tf.float32),
             lambda: image
             )
         image = tf.cast(image/255.0, tf.float32)
-        #image = super().standardizedImage(image)
         lable = tf.py_function(self.encoderLable, inp=[lable], Tout=tf.int32)
         return image, lable
     

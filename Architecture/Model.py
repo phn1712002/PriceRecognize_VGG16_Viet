@@ -1,3 +1,4 @@
+import cv2
 import tensorflow as tf, os, datetime
 from keras import optimizers, losses, Model, Input, applications, metrics
 from keras.layers import Flatten, Dense, Dropout
@@ -89,14 +90,13 @@ class VGG16(CustomModel):
         return self
        
     def predict(self, image_input):
-        image_input_tf = tf.convert_to_tensor(image_input, dtype=tf.float32)
-        image_input_tf = self.standardizedImage(image_input_tf)
+        image_input_tf = self.standardizedImage(image_input)
         output_tf = self.model.predict_on_batch(image_input_tf)
         output = self.decoderLable(output_tf)
         return output
-    
+
     def standardizedImage(self, image_tf):
-        image = tf.image.resize(image_tf, size=(self.image_size[0], self.image_size[1]))
+        image = tf.convert_to_tensor(cv2.resize(image_tf, (self.image_size[0], self.image_size[1]), interpolation = cv2.INTER_AREA), dtype=tf.float32)
         image = tf.cast(image/255.0, tf.float32)
         return image
     
@@ -196,8 +196,7 @@ class VGG16_TFLite(VGG16):
         return self
     
     def predict(self, image_input):
-        image_input_tf = tf.convert_to_tensor(image_input, dtype=tf.float32)
-        image_input_tf = super().standardizedImage(image_input_tf)
+        image_input_tf = super().standardizedImage(image_input)
         output_tf  = self.__invoke(image_input_tf)
         output = super().decoderLable(output_tf)
         return output
