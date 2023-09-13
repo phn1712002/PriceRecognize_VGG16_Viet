@@ -35,7 +35,7 @@ class CustomCallbacksWandB(Callback):
         # Cập nhật file weights model to cloud wandb
         path_file_update = getPathWeightsNearest(self.path_logs)
         if self.__last_name_update != path_file_update: 
-            os.remove(self.__last_name_update)
+            if not self.__last_name_update is None: os.remove(self.__last_name_update)
             self.__last_name_update = path_file_update
             wandb.save(path_file_update)
         
