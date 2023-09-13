@@ -1,7 +1,6 @@
 import wandb, os, time
 from Callbacks.WandB import CustomCallbacksWandB
 from keras.callbacks import ModelCheckpoint, TensorBoard
-from wandb.keras import WandbCallback
 
 def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_dataset, pipeline):
     NAME_TIME = time.strftime("%Y%m%d-%H%M%S-")
@@ -19,14 +18,6 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_data
                 sync_tensorboard=config['config_wandb']['sync_tensorboard'],
                 config=config_update)
         checkpoint_WandB = CustomCallbacksWandB(pipeline=pipeline, path_logs=PATH_LOGS, dev_dataset=dev_dataset)
-        """
-        checkpoint_WandB_log = WandbCallback(save_model=False, 
-                                             save_graph=True, 
-                                             log_weights=False, 
-                                             log_gradients=False, 
-                                             log_evaluation=False)
-        """
         callbacks_model.append(checkpoint_WandB)
-        #callbacks_model.append(checkpoint_WandB_log)
     
     return callbacks_model
