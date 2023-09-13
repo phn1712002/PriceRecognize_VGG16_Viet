@@ -45,7 +45,7 @@ class VGG16(CustomModel):
             if self.transfer_learning:
                 model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
                 # Đóng băng các layers
-                if freeze:
+                if self.freeze:
                     for layer in model_vgg16_conv.layers:
                         layer.trainable = False
             else: 
