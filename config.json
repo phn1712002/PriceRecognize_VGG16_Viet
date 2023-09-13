@@ -13,7 +13,7 @@
         "num_layers": 2, 
         "hidden_layers": 4096,   
         "rate_dropout": 0.5,
-        "image_size": [128, 128, 3]
+        "image_size": [224, 224, 3]
     },
     "config_dataset": {
         "batch_size_train": 8,  

@@ -39,22 +39,22 @@ class VGG16(CustomModel):
     def build(self, summary=False):
         strategy = tf.distribute.MirroredStrategy()
         with strategy.scope():
-            input = Input(shape=self.image_size, name='input')
+            #input = Input(shape=self.image_size, name='input')
             
             # Transfer Learning
             if self.transfer_learning:
-                model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
+                model_vgg16_conv = applications.VGG16(input_shape=self.image_size, weights='imagenet')
                 # Đóng băng các layers
                 if self.freeze:
                     for layer in model_vgg16_conv.layers:
                         layer.trainable = False
             else: 
-                model_vgg16_conv = applications.VGG16(weights=None, include_top=False)
+                model_vgg16_conv = applications.VGG16(input_shape=self.image_size, weights=None)
                      
-            output_vgg16_conv = model_vgg16_conv(input)
+            #output_vgg16_conv = model_vgg16_conv(input)
             
             # Thêm vào các FC layers 
-            x = Flatten(name='flatten')(output_vgg16_conv)
+            x = Flatten(name='flatten')(model_vgg16_conv.get_layer('block5_pool').output)
             
             hidden_layers = None
             rate_dropout = None
@@ -76,7 +76,7 @@ class VGG16(CustomModel):
                     
             output = Dense(self.num_lables, activation='softmax', name='output')(x)
             
-            self.model = Model(inputs=input, outputs=output, name=self.name)
+            self.model = Model(inputs=model_vgg16_conv.inputs, outputs=output, name=self.name)
             self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.CategoricalAccuracy()])
         
         if summary:

@@ -1,11 +1,15 @@
 import wandb, os, time
 from Callbacks.WandB import CustomCallbacksWandB
 from keras.callbacks import ModelCheckpoint, TensorBoard
+from wandb.keras import WandbCallback
 
 def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_dataset, pipeline):
     NAME_TIME = time.strftime("%Y%m%d-%H%M%S-")
     tensorBoard_callbacks = TensorBoard(log_dir=PATH_TENSORBOARD)
-    checkpoint_callbacks = ModelCheckpoint(filepath=PATH_LOGS + NAME_TIME + '.h5', save_best_only=True, save_weights_only=True, **config['config_train']['checkpoint'])
+    checkpoint_callbacks = ModelCheckpoint(filepath=PATH_LOGS + NAME_TIME + '.h5', 
+                                           save_best_only=True, 
+                                           save_weights_only=True, 
+                                           **config['config_train']['checkpoint'])
     callbacks_model = [tensorBoard_callbacks, checkpoint_callbacks]
     if config['config_wandb']['using'] == True:
         os.environ['WANDB_API_KEY'] = config['config_wandb']['api_key']
@@ -17,7 +21,16 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_data
                 name=NAME_TIME + config['config_wandb']['name'],
                 sync_tensorboard=config['config_wandb']['sync_tensorboard'],
                 config=config_update)
-        checkpoint_WandB = CustomCallbacksWandB(pipeline=pipeline, path_logs=PATH_LOGS, dev_dataset=dev_dataset)
-        callbacks_model.append(checkpoint_WandB)
-    
+        save_output_WandB = CustomCallbacksWandB(pipeline=pipeline, 
+                                                 path_logs=PATH_LOGS, 
+                                                 dev_dataset=dev_dataset)
+        log_WandB = WandbCallback(training_data=train_dataset, 
+                                  validation_data=dev_dataset, 
+                                  save_graph=True,
+                                  save_model=False, 
+                                  log_weights=True,
+                                  log_gradients=True, 
+                                  log_evaluation=True)
+        callbacks_model.append(save_output_WandB)
+        allbacks_model.append(log_WandB)
     return callbacks_model
