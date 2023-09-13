@@ -14,6 +14,9 @@ class CustomCallbacksWandB(Callback):
         
     def on_epoch_end(self, epoch: int, logs=None):
         
+        # Save Logs
+        wandb.log(logs)
+        
         # Sao lưu một mẫu âm thanh kiểm tra
         tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output"])
         for X, _ in self.dev_dataset.take(1):
