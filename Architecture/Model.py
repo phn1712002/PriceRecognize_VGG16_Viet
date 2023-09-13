@@ -28,7 +28,7 @@ class VGG16(CustomModel):
         self.transfer_learning = transfer_learning
         self.freeze = freeze
         self.name = name
-        self.image_size = image_size
+        self.image_size = tuple(image_size)
         self.num_layers = num_layers
         self.hidden_layers = hidden_layers
         self.rate_dropout = rate_dropout
