@@ -1,4 +1,4 @@
-import wandb
+import wandb, os
 import tensorflow as tf
 import numpy as np
 from keras.callbacks import Callback
@@ -26,7 +26,7 @@ class CustomCallbacksWandB(Callback):
         Y = self.model.predict_on_batch(X)
         output = self.pipeline.decoderLable(Y)
         
-        image_input_wandb = wandb.Image(X.numpy())
+        image_input_wandb = wandb.Image(tf.squeeze(X).numpy())
             
         tableOutputPredict.add_data(epoch + 1, image_input_wandb, output)
         wandb.log({'Predict': tableOutputPredict}) 
@@ -35,6 +35,7 @@ class CustomCallbacksWandB(Callback):
         # Cập nhật file weights model to cloud wandb
         path_file_update = getPathWeightsNearest(self.path_logs)
         if self.__last_name_update != path_file_update: 
+            os.remove(self.__last_name_update)
             self.__last_name_update = path_file_update
             wandb.save(path_file_update)
         
