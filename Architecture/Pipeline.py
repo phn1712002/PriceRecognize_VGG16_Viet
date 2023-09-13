@@ -52,6 +52,7 @@ class PriceRecognize_VGG16(VGG16):
     def __call__(self, dataset=None, batch_size=1):
         data = tf.data.Dataset.from_tensor_slices(dataset)
         data = (data.map(self.mapProcessing, num_parallel_calls=tf.data.AUTOTUNE)
+                .shuffle(buffer_size=batch_size, reshuffle_each_iteration=True)
                 .batch(batch_size)
                 .prefetch(buffer_size=tf.data.AUTOTUNE))
         return data
