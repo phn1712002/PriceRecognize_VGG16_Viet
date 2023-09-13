@@ -32,5 +32,5 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, dev_data
                                   log_gradients=True, 
                                   log_evaluation=True)
         callbacks_model.append(save_output_WandB)
-        allbacks_model.append(log_WandB)
+        callbacks_model.append(log_WandB)
     return callbacks_model
