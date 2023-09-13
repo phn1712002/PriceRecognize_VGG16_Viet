@@ -81,7 +81,6 @@ callbacks_VGG16= createCallbacks(PATH_TENSORBOARD=PATH_TENSORBOARD,
 # Create model
 model = VGG16(class_names=class_names, 
               opt=opt_VGG16,
-              transfer_learning=True,
               **config_model).build(config_other['summary'])
 
 # Pretrain

@@ -8,6 +8,8 @@
     },
     "config_model": {
         "name": "VGG16",
+        "freeze": true,
+        "transfer_learning": true,
         "num_layers": 2, 
         "hidden_layers": 4096,   
         "rate_dropout": 0.5,
@@ -22,14 +24,14 @@
         }         
     },
     "config_opt": {
-        "learning_rate": 0.0001
+        "learning_rate": 0.001
     },
     "config_other": {
         "warning": false,
         "summary": true
     },
     "config_train": {
-        "epochs": 1,
+        "epochs": 50,
         "checkpoint": {
             "monitor": "val_loss",
             "mode": "auto",

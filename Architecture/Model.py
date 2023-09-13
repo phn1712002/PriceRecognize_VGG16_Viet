@@ -15,6 +15,7 @@ class VGG16(CustomModel):
     def __init__(self, 
                  class_names:text.Tokenizer,
                  name='VGG16',
+                 freeze=True,
                  transfer_learning=False,
                  num_layers=2,
                  hidden_layers=4096,
@@ -25,6 +26,7 @@ class VGG16(CustomModel):
                  ):
         super().__init__(model=None, opt=opt, loss=loss)
         self.transfer_learning = transfer_learning
+        self.freeze = freeze
         self.name = name
         self.image_size = image_size
         self.num_layers = num_layers
@@ -43,8 +45,9 @@ class VGG16(CustomModel):
             if self.transfer_learning:
                 model_vgg16_conv = applications.VGG16(weights='imagenet', include_top=False)
                 # Đóng băng các layers
-                for layer in model_vgg16_conv.layers:
-                    layer.trainable = False
+                if freeze:
+                    for layer in model_vgg16_conv.layers:
+                        layer.trainable = False
             else: 
                 model_vgg16_conv = applications.VGG16(weights=None, include_top=False)
                      
