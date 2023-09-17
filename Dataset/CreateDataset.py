@@ -14,7 +14,7 @@ class PriceRecognize_Dataset_Vietnamese:
         list_path_image = list(paths.list_images(self.path + 'train/'))
         lable = []
         for path_image in list_path_image:
-            lable.append(path_image.split(os.path.sep)[-2])
+            lable.append(os.path.normpath(path_image).split(os.path.sep)[-2])
             
         X_train, X_dev, y_train, y_dev = train_test_split(list_path_image, lable, test_size=0.2, random_state=random_state)
         self._train_dataset = X_train, y_train
