@@ -35,7 +35,8 @@
         "checkpoint": {
             "monitor": "val_loss",
             "mode": "auto",
-            "verbose": 1
+            "verbose": 1,
+            "save_freq": 5
         }
     }
 }
