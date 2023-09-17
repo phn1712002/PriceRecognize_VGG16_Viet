@@ -6,9 +6,9 @@ from Tools.Weights import getPathWeightsNearest
 from Architecture.Pipeline import PriceRecognize_VGG16
 
 class CustomCallbacksWandB(Callback):
-    def __init__(self, pipeline: PriceRecognize_VGG16, path_logs='./Checkpoint/logs/', dev_dataset=None):
+    def __init__(self, pipeline: PriceRecognize_VGG16, path_logs='./Checkpoint/logs/', dataset=None):
         super().__init__()
-        self.dev_dataset = dev_dataset
+        self.dataset = dataset
         self.path_logs = path_logs
         self.pipeline = pipeline
         
@@ -16,7 +16,7 @@ class CustomCallbacksWandB(Callback):
             
         # Sao lưu một mẫu âm thanh kiểm tra
         tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output"])
-        for X, _ in self.dev_dataset.take(1):
+        for X, _ in self.dataset.take(1):
             if not X.shape[0] == 1:
                 index = np.random.randint(low=0, high=X.shape[0] - 1)
                 X = X[index]

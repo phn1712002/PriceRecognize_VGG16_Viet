@@ -67,6 +67,9 @@ train_dataset = PriceRecognize_VGG16(class_names=class_names,
 dev_dataset = PriceRecognize_VGG16(class_names=class_names, 
                                    config_model=config_model)(dataset=dev_dataset_raw, batch_size=config_dataset['batch_size_dev'])
 
+test_dataset = PriceRecognize_VGG16(class_names=class_names, 
+                                   config_model=config_model)(dataset=test_dataset_raw, batch_size=config_dataset['batch_size_test'])
+
 # Create optimizers
 opt_VGG16 = CustomOptimizers(**config_opt)()
 
@@ -74,7 +77,8 @@ opt_VGG16 = CustomOptimizers(**config_opt)()
 callbacks_VGG16= createCallbacks(PATH_TENSORBOARD=PATH_TENSORBOARD, 
                                 PATH_LOGS=PATH_LOGS, 
                                 config=config, 
-                                train_dataset=train_dataset, 
+                                train_dataset=train_dataset,
+                                test_dataset=test_dataset,
                                 dev_dataset=dev_dataset, 
                                 pipeline=pipeline)
 
