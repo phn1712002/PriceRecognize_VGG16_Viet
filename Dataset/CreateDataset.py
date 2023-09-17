@@ -11,7 +11,7 @@ class PriceRecognize_Dataset_Vietnamese:
         self._test_dataset = None
         
     def __call__(self, random_state=1712):
-        list_path_image = list(paths.list_images(self.path + 'raw/'))
+        list_path_image = list(paths.list_images(self.path + 'train/'))
         lable = []
         for path_image in list_path_image:
             lable.append(path_image.split(os.path.sep)[-2])

@@ -105,8 +105,8 @@ class VGG16(CustomModel):
     
     def decoderLable(self, output_tf):
         output_tf = tf.math.argmax(output_tf, axis=-1) 
-        output = self.class_names.sequences_to_texts([output_tf.numpy()])
-        return output[0]
+        output_decoder = self.class_names.sequences_to_texts([output_tf.numpy()])
+        return output_decoder[0]
     
     def getConfig(self):
         return {
