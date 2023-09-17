@@ -13,10 +13,7 @@ class CustomCallbacksWandB(Callback):
         self.pipeline = pipeline
         
     def on_epoch_end(self, epoch: int, logs=None):
-        
-        # Save Logs
-        wandb.log(logs)
-        
+            
         # Sao lưu một mẫu âm thanh kiểm tra
         tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output"])
         for X, _ in self.dev_dataset.take(1):
@@ -32,10 +29,5 @@ class CustomCallbacksWandB(Callback):
             
         tableOutputPredict.add_data(epoch + 1, image_input_wandb, output)
         wandb.log({'Predict': tableOutputPredict}) 
-        
-        
-        # Cập nhật file weights model to cloud wandb
-        path_file_update = getPathWeightsNearest(self.path_logs)
-        wandb.save(path_file_update)
         
         
