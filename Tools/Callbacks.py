@@ -5,7 +5,7 @@ from wandb.keras import WandbCallback, WandbModelCheckpoint
 
 def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dataset ,dev_dataset, pipeline):
     NAME_TIME = time.strftime("%Y%m%d-%H%M%S-")
-    NAME_STRUCTURE = '{epoch:02d}.h5'
+    NAME_STRUCTURE = '{epoch:02d}'
     
     tensorBoard_callbacks = TensorBoard(log_dir=PATH_TENSORBOARD)
     callbacks_model = [tensorBoard_callbacks]
@@ -32,7 +32,7 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
                                   log_gradients=True, 
                                   log_evaluation=True)
         
-        checkpoint_callbacks = WandbModelCheckpoint(filepath=PATH_LOGS,
+        checkpoint_callbacks = WandbModelCheckpoint(filepath=PATH_LOGS + NAME_STRUCTURE,
                                                     save_weights_only=True, 
                                                     **config['config_train']['checkpoint'])
         
@@ -40,7 +40,7 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
         callbacks_model.append(log_WandB)
         callbacks_model.append(checkpoint_callbacks)
     else:
-        checkpoint_callbacks = ModelCheckpoint(filepath=PATH_LOGS + NAME_TIME + NAME_STRUCTURE, 
+        checkpoint_callbacks = ModelCheckpoint(filepath=PATH_LOGS + NAME_TIME + NAME_STRUCTURE + '.h5', 
                                                save_weights_only=True, 
                                                **config['config_train']['checkpoint'])
         callbacks_model.append(checkpoint_callbacks)
