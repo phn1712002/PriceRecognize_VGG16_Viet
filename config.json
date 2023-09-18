@@ -6,6 +6,11 @@
         "name": "",
         "sync_tensorboard": false
     },
+    "config_jarvislabs":{
+        "using": false,
+        "token": "",
+        "user_id": "phn1712002@gmail.com"
+    },
     "config_model": {
         "name": "VGG16",
         "freeze": true,

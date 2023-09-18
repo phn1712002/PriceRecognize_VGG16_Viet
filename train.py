@@ -1,8 +1,11 @@
+
 import tensorflow as tf, warnings, wandb, argparse
 from Architecture.Model import VGG16
 from Dataset.CreateDataset import PriceRecognize_Dataset_Vietnamese
 from Architecture.Pipeline import PriceRecognize_VGG16
 from Optimizers.OptimizersVGG16 import CustomOptimizers
+from jlclient import jarvisclient
+from jlclient.jarvisclient import *
 from Tools.Json import loadJson
 from Tools.Callbacks import createCallbacks
 from Tools.Folder import createFolder
@@ -31,7 +34,7 @@ args = parser.parse_args()
 # Get config
 config = loadJson(PATH_CONFIG)
 if not config == None:
-    keys_to_check = ['config_wandb', 'config_model', 'config_opt', 'config_other', 'config_train', 'config_dataset']
+    keys_to_check = ['config_wandb', 'config_jarvislabs','config_model', 'config_opt', 'config_other', 'config_train', 'config_dataset']
     if all(key in config for key in keys_to_check):
         config_wandb = config['config_wandb']
         config_model = config['config_model']
@@ -39,6 +42,7 @@ if not config == None:
         config_other = config['config_other']
         config_train = config['config_train']
         config_dataset = config['config_dataset']
+        config_jarvislabs = config['config_jarvislabs']
     else:
         raise RuntimeError("Error config")
         
@@ -106,3 +110,10 @@ if args.export_tflite:
 
 # Off Wandb
 wandb.finish()
+
+# Stop Jarvislabs
+if config_jarvislabs['using']:
+    jarvisclient.token = config_jarvislabs['token']
+    jarvisclient.user_id = config_jarvislabs['user_id']
+    instance = User.get_instances()[0]
+    instance.pause()
