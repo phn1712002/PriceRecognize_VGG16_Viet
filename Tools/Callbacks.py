@@ -32,7 +32,7 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
                                   log_gradients=True, 
                                   log_evaluation=True)
         
-        checkpoint_callbacks = WandbModelCheckpoint(filepath=PATH_LOGS + NAME_STRUCTURE,
+        checkpoint_callbacks = WandbModelCheckpoint(filepath=PATH_LOGS,
                                                     save_weights_only=True, 
                                                     **config['config_train']['checkpoint'])
         
