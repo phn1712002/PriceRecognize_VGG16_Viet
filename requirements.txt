@@ -8,4 +8,5 @@ scikit-learn
 wandb
 tqdm
 pyclean
+psutil
 git+https://github.com/jarvislabsai/jlclient.git
