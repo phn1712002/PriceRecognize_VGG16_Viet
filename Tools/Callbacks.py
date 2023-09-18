@@ -21,6 +21,7 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
         wandb.tensorboard.patch(root_logdir=PATH_TENSORBOARD)
         config_update = config.copy()
         config_update.pop('config_wandb')
+        config_update.pop('config_jarvislabs')
         wandb.init(project=config['config_wandb']['project'],
                 name=NAME_TIME + config['config_wandb']['name'],
                 sync_tensorboard=config['config_wandb']['sync_tensorboard'],
