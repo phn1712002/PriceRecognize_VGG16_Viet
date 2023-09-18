@@ -6,7 +6,7 @@ from jlclient.jarvisclient import *
 
 # Environment Variables
 PATH_CONFIG = './config.json'
-sleep_duration = 5
+sleep_duration = 60
 
 # Get config
 config = loadJson(PATH_CONFIG)
