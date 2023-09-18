@@ -5,7 +5,7 @@ from wandb.keras import WandbCallback, WandbModelCheckpoint
 
 def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dataset ,dev_dataset, pipeline):
     NAME_TIME = time.strftime("%Y%m%d-%H%M%S-")
-    NAME_STRUCTURE = '{epoch:02d}'
+    NAME_STRUCTURE = ''
     
     tensorBoard_callbacks = TensorBoard(log_dir=PATH_TENSORBOARD)
     
