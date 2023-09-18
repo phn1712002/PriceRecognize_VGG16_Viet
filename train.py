@@ -27,7 +27,7 @@ createFolder(PATH_TFLITE)
 # Argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--pretrain_config', type=bool, default=False, help='Pretrain model VGG16 in logs training in dataset')
-parser.add_argument('--path_file_pretrain', type=str, default='', help='Path file pretrain model')
+parser.add_argument('--name_file_pretrain', type=str, default='', help='Name file pretrain model')
 parser.add_argument('--export_tflite', type=bool, default=False, help='Export to tflite')
 args = parser.parse_args()
 
@@ -93,10 +93,10 @@ model = VGG16(class_names=class_names,
 
 # Pretrain
 if args.pretrain_config:
-    if args.path_file_pretrain == '':
+    if args.name_file_pretrain == '':
         model = model.loadWeights(path=PATH_LOGS)
     else: 
-        model = model.loadWeights(path=PATH_LOGS, name_file=args.path_file_pretrain)
+        model = model.loadWeights(path=PATH_LOGS, name_file=args.name_file_pretrain)
         
 # Train model
 model.fit(train_dataset=train_dataset, 
