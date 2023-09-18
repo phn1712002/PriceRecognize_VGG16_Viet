@@ -14,7 +14,9 @@ class CustomCallbacksWandB(Callback):
         self.__last_name_update = None
         
     def on_epoch_end(self, epoch: int, logs=None):
-            
+        # Sao lưu logs wandb
+        wandb.log(logs)
+        
         # Sao lưu một mẫu âm thanh kiểm tra
         tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output Target", "Output Pred"])
         for X, Y in self.dataset.take(1):
@@ -35,7 +37,7 @@ class CustomCallbacksWandB(Callback):
         wandb.log({'Predict': tableOutputPredict}) 
         
         
-        # Save file h5
+        # Sao lưu h5
         path_file_update = getPathWeightsNearest(self.path_logs)
         if self.__last_name_update != path_file_update: 
             self.__last_name_update = path_file_update

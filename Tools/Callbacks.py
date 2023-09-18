@@ -26,10 +26,11 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
                 name=NAME_TIME + config['config_wandb']['name'],
                 sync_tensorboard=config['config_wandb']['sync_tensorboard'],
                 config=config_update)
-        print_output_WandB = CustomCallbacksWandB(pipeline=pipeline, 
+        custom_WandB = CustomCallbacksWandB(pipeline=pipeline, 
                                                  path_logs=PATH_LOGS, 
                                                  dataset=test_dataset)
-        
+        callbacks_model.append(custom_WandB)
+        """
         log_WandB = WandbCallback(training_data=train_dataset, 
                                   validation_data=dev_dataset, 
                                   save_graph=True,
@@ -37,7 +38,6 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
                                   log_weights=True,
                                   log_gradients=True, 
                                   log_evaluation=True)
-        
-        callbacks_model.append(print_output_WandB)
         callbacks_model.append(log_WandB)
+        """
     return callbacks_model
