@@ -16,19 +16,22 @@ class CustomCallbacksWandB(Callback):
     def on_epoch_end(self, epoch: int, logs=None):
             
         # Sao lưu một mẫu âm thanh kiểm tra
-        tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output"])
-        for X, _ in self.dataset.take(1):
+        tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output Target", "Output Pred"])
+        for X, Y in self.dataset.take(1):
             if not X.shape[0] == 1:
                 index = np.random.randint(low=0, high=X.shape[0] - 1)
                 X = X[index]
                 X = tf.expand_dims(X, axis=0)
+                Y = Y[index]
+                Y = tf.expand_dims(Y, axis=0)
         
-        Y = self.model.predict_on_batch(X)
-        output = self.pipeline.decoderLable(Y)
+        Y_pred = self.model.predict_on_batch(X)
+        output_pred = self.pipeline.decoderLable(Y_pred)
+        output_target = self.pipeline.decoderLable(Y)
         
         image_input_wandb = wandb.Image(tf.squeeze(X).numpy())
             
-        tableOutputPredict.add_data(epoch + 1, image_input_wandb, output)
+        tableOutputPredict.add_data(epoch + 1, image_input_wandb, output_target, output_pred)
         wandb.log({'Predict': tableOutputPredict}) 
         
         
