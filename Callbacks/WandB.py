@@ -11,6 +11,7 @@ class CustomCallbacksWandB(Callback):
         self.dataset = dataset
         self.path_logs = path_logs
         self.pipeline = pipeline
+        self.__last_name_update = None
         
     def on_epoch_end(self, epoch: int, logs=None):
             
@@ -31,3 +32,8 @@ class CustomCallbacksWandB(Callback):
         wandb.log({'Predict': tableOutputPredict}) 
         
         
+        # Save file h5
+        path_file_update = getPathWeightsNearest(self.path_logs)
+        if self.__last_name_update != path_file_update: 
+            self.__last_name_update = path_file_update
+            wandb.save(path_file_update)

@@ -8,8 +8,13 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
     NAME_STRUCTURE = '{epoch:02d}'
     
     tensorBoard_callbacks = TensorBoard(log_dir=PATH_TENSORBOARD)
-    callbacks_model = [tensorBoard_callbacks]
     
+    
+    checkpoint_callbacks = ModelCheckpoint(filepath=PATH_LOGS + NAME_TIME + NAME_STRUCTURE + '.h5', 
+                                           save_weights_only=True, 
+                                           **config['config_train']['checkpoint'])
+    
+    callbacks_model = [tensorBoard_callbacks, checkpoint_callbacks]
     if config['config_wandb']['using'] == True:
         os.environ['WANDB_API_KEY'] = config['config_wandb']['api_key']
         wandb.login()
@@ -32,16 +37,6 @@ def createCallbacks(PATH_TENSORBOARD, PATH_LOGS, config, train_dataset, test_dat
                                   log_gradients=True, 
                                   log_evaluation=True)
         
-        checkpoint_callbacks = WandbModelCheckpoint(filepath=PATH_LOGS,
-                                                    save_weights_only=True, 
-                                                    **config['config_train']['checkpoint'])
-        
         callbacks_model.append(print_output_WandB)
         callbacks_model.append(log_WandB)
-        callbacks_model.append(checkpoint_callbacks)
-    else:
-        checkpoint_callbacks = ModelCheckpoint(filepath=PATH_LOGS + NAME_TIME + NAME_STRUCTURE + '.h5', 
-                                               save_weights_only=True, 
-                                               **config['config_train']['checkpoint'])
-        callbacks_model.append(checkpoint_callbacks)
     return callbacks_model
