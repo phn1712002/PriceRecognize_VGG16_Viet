@@ -28,8 +28,8 @@ else:
     while True:
         if psutil.pid_exists(pid_to_check):
             process = psutil.Process(pid_to_check)
-            print(f"PID {pid_to_check} đang chạy.")
-            print(f"Thời gian khởi động: {process.create_time()}")
+            time_now = time.strftime("%Y%m%d-%H%M%S")
+            print(f"PID {pid_to_check} đang chạy tại thời gian {time_now}")
             time.sleep(sleep_duration)
         else:
             jarvisclient.token = config_jarvislabs['token']
