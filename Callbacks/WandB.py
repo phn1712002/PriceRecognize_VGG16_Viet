@@ -39,6 +39,4 @@ class CustomCallbacksWandB(Callback):
         
         # Sao lưu h5
         path_file_update = getPathWeightsNearest(self.path_logs)
-        if self.__last_name_update != path_file_update: 
-            self.__last_name_update = path_file_update
-            wandb.save(path_file_update)
+        wandb.save(path_file_update)
