@@ -3,7 +3,7 @@ import tensorflow as tf
 from Dataset.CreateDataset import PriceRecognize_Dataset_Vietnamese
 from Architecture.Pipeline import PriceRecognize_VGG16
 from Architecture.Model import VGG16_TFLite
-from Tools.Json import loadJson, saveJson
+from Tools.Json import saveJson
 from Tools.Folder import createFolder
 from sklearn.metrics import classification_report
 from sklearn.metrics import multilabel_confusion_matrix
