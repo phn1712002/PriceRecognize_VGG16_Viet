@@ -91,6 +91,17 @@ class VGG16(CustomModel):
                        callbacks=callbacks)
         
         return self
+    
+    def predict_on_evaluate(self, dataset=None): 
+        all_y_target = []
+        all_y_pred = []
+        for _, (X, y) in tqdm.tqdm(enumerate(dataset)):
+            output_tf  = self.model.predict_on_batch(X)
+            for i, _ in enumerate(output_tf):
+                all_y_pred.append(tf.math.argmax(output_tf, axis=-1)[i].numpy())
+                all_y_target.append(tf.math.argmax(y, axis=-1)[i].numpy())
+            
+        return all_y_target, all_y_pred
        
     def predict(self, image_input):
         image_input_tf = self.standardizedImage(image_input)
@@ -204,7 +215,7 @@ class VGG16_TFLite(VGG16):
         output = super().decoderLable(output_tf)
         return output
     
-    def predict_in_evaluate(self, dataset=None): 
+    def predict_on_evaluate(self, dataset=None): 
         all_y_target = []
         all_y_pred = []
         for _, (X, y) in tqdm.tqdm(enumerate(dataset)):

@@ -1,59 +1,59 @@
 {
-    "1": {
+    "1000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 44.0
     },
-    "2": {
+    "500000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 44.0
     },
-    "3": {
+    "100000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 43.0
     },
-    "4": {
+    "200000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 42.0
     },
-    "5": {
+    "10000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 40.0
     },
-    "6": {
+    "2000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 42.0
     },
-    "7": {
+    "20000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 33.0
     },
-    "8": {
+    "5000": {
         "precision": 0.0,
         "recall": 0.0,
         "f1-score": 0.0,
         "support": 33.0
     },
-    "9": {
+    "50000": {
         "precision": 0.8333333333333334,
         "recall": 0.967741935483871,
         "f1-score": 0.8955223880597015,
         "support": 31.0
     },
-    "10": {
+    "0000": {
         "precision": 1.0,
         "recall": 0.9629629629629629,
         "f1-score": 0.9811320754716981,

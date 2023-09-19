@@ -29,33 +29,21 @@ model = VGG16_TFLite(path=PATH_EXPORT, name_file=NAME_TFLITE).build()
 # Create dataset
 test_dataset = PriceRecognize_VGG16(class_names=model.class_names, 
                                    config_model=model.getConfig())(dataset=test_dataset_raw, batch_size=10)
-
-# Evaluate 
-y_true, y_pred = model.predict_in_evaluate(test_dataset)
+target_names = list(model.class_names.word_index.keys())
+# Predict evaluate 
+y_true, y_pred = model.predict_on_evaluate(test_dataset)
      
-# Output Info
+# Calculate classification report
 path_classification_report = PATH_REPORT + 'classification_report.json'
-data_classification_report = classification_report(y_true, y_pred, output_dict=True)
-saveJson(path=path_classification_report, data=data_classification_report)
+classrp_dict = classification_report(y_true, y_pred, output_dict=True, target_names=target_names)
+saveJson(path=path_classification_report, data=classrp_dict)
 print(f"Save classification report in {path_classification_report}")
 
 # Calculate multilabel confusion matrix
 mcm = multilabel_confusion_matrix(y_true, y_pred)
-
-# Plot confusion matrix
-plt.figure(figsize=(10, 8))
-for i, class_name in enumerate(list(model.class_names.word_index.keys())):
-    plt.subplot(2, 3, i + 1)
-    sns.heatmap(mcm[i], annot=True, fmt='d', cmap='Blues', cbar=False)
-    plt.title(f'Confusion Matrix for {class_name}')
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-
-plt.tight_layout()
-plt.show()
-
-# Save the plot as an image
-path_multilabel_confusion_matrix = PATH_REPORT + 'multilabel_confusion_matrix.png'
-plt.savefig(path_multilabel_confusion_matrix)
+path_multilabel_confusion_matrix = PATH_REPORT + 'multilabel_confusion_matrix.json'
+mcm_dict = {}
+for index in range(len(mcm)): mcm_dict.update({f'{target_names[index]}': mcm[index].tolist()})
+saveJson(path=path_multilabel_confusion_matrix, data=mcm_dict)
 print(f"Save multilabel confusion matrix in {path_multilabel_confusion_matrix}")
 
