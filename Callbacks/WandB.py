@@ -47,7 +47,6 @@ class CustomCallbacksWandB(Callback):
             path = self.path_logs + self.name_save.format(epoch=epoch+1)
             self.model.save_weights(path)
             wandb.save(path)
-            os.remove(path)
             if self.verbose == 1:
                 print(f"Save weights epoch {epoch+1} - {path}" )
            
