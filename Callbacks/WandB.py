@@ -21,10 +21,13 @@ class CustomCallbacksWandB(Callback):
         
         self.name_save = name_save
         self.history_checkpoint = []
-        self.monitor = monitor
-        self.save_freq = save_freq
+        self.monitor = monitor     
         self.mode = mode
         self.verbose = verbose
+        if save_freq == 'epoch':
+            self.save_freq = 1
+        else: 
+            self.save_freq = save_freq
         
     def on_epoch_end(self, epoch: int, logs=None):
         

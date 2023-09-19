@@ -16,7 +16,7 @@
         "freeze": true,
         "transfer_learning": true,
         "num_layers": 2, 
-        "hidden_layers": 4096,   
+        "hidden_layers": 4096,
         "rate_dropout": 0.5,
         "image_size": [224, 224, 3]
     },
@@ -30,7 +30,7 @@
         }         
     },
     "config_opt": {
-        "learning_rate": 0.001
+        "learning_rate": 1e-4
     },
     "config_other": {
         "warning": false,

@@ -9,7 +9,7 @@ from keras.callbacks import ModelCheckpoint, TensorBoard
 from Tools.Json import loadJson
 from Tools.Folder import createFolder
 from jlclient import jarvisclient
-from jlclient.jarvisclient import *
+from jlclient.jarvisclient import User
 
 
 
