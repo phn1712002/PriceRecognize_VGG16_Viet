@@ -99,7 +99,7 @@ if config['config_wandb']['using'] == True:
     custom_WandB = CustomCallbacksWandB(name_save=NAME_TIME + 'epoch-{epoch:02d}.h5',
                                         path_logs=PATH_LOGS, 
                                         pipeline=pipeline, 
-                                        dataset=test_dataset
+                                        dataset=test_dataset,
                                         **config['config_train']['checkpoint'])
     callbacks.append(custom_WandB)
     
