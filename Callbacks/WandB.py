@@ -38,9 +38,9 @@ class CustomCallbacksWandB(Callback):
         self.history_checkpoint.append(logs[self.monitor])
         save_model_checkpoint = False
         if self.mode == 'min':
-            save_model_checkpoint = min(self.history_checkpoint) > logs[self.monitor]
+            save_model_checkpoint = min(self.history_checkpoint) >= logs[self.monitor]
         elif self.mode == 'max':
-            save_model_checkpoint = max(self.history_checkpoint) < logs[self.monitor]
+            save_model_checkpoint = max(self.history_checkpoint) <= logs[self.monitor]
             
         # Sao lưu mô hình 
         if self.save_freq > 0 and epoch % self.save_freq == 0 and save_model_checkpoint:
@@ -51,7 +51,6 @@ class CustomCallbacksWandB(Callback):
             if self.verbose == 1:
                 print(f"Save weights epoch {epoch+1} - {path}" )
            
-            
         # Sao lưu một mẫu âm thanh kiểm tra
         tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output Target", "Output Pred"])
         for X, Y in self.dataset.take(1):
