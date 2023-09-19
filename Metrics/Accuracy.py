@@ -5,7 +5,7 @@ class F1:
     def __init__(self, dataset=None):
         self.dataset = dataset
         
-    def __call__(self, *args: Any, **kwds: Any):
+    def __call__(self, input):
         f1_score(average=None)
         
         
