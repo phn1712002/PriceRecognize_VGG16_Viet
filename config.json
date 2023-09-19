@@ -40,7 +40,7 @@
         "epochs": 50,
         "checkpoint": {
             "monitor": "val_loss",
-            "mode": "auto",
+            "mode": "min",
             "verbose": 1,
             "save_freq": "epoch"
         }
