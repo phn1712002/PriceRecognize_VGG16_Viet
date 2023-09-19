@@ -28,7 +28,7 @@ model = VGG16_TFLite(path=PATH_EXPORT, name_file=NAME_TFLITE).build()
 
 # Create dataset
 test_dataset = PriceRecognize_VGG16(class_names=model.class_names, 
-                                   config_model=model.config_model)(dataset=test_dataset_raw, batch_size=10)
+                                   config_model=model.getConfig())(dataset=test_dataset_raw, batch_size=10)
 
 # Evaluate 
 y_true, y_pred = model.predict_in_evaluate(test_dataset)
@@ -44,7 +44,7 @@ mcm = multilabel_confusion_matrix(y_true, y_pred)
 
 # Plot confusion matrix
 plt.figure(figsize=(10, 8))
-for i, class_name in enumerate(model.class_names.classes_):
+for i, class_name in enumerate(list(model.class_names.word_index.keys())):
     plt.subplot(2, 3, i + 1)
     sns.heatmap(mcm[i], annot=True, fmt='d', cmap='Blues', cbar=False)
     plt.title(f'Confusion Matrix for {class_name}')

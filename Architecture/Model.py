@@ -184,10 +184,10 @@ class VGG16_TFLite(VGG16):
             path_json_class_names = path + name_file + '_class_names.json'
             path_json_config = path + name_file + '.json'
             
-            self.config_model = loadJson(path=path_json_config)
+            config_model = loadJson(path=path_json_config)
             config_class_names = loadJson(path=path_json_class_names)
             class_names = text.tokenizer_from_json(config_class_names)
-            super().__init__(class_names=class_names, **self.config_model)
+            super().__init__(class_names=class_names, **config_model)
         else:
             raise RuntimeError('Model load error')
     
