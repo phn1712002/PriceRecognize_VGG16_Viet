@@ -44,7 +44,7 @@ class CustomCallbacksWandB(Callback):
             
         # Sao lưu mô hình 
         if self.save_freq > 0 and epoch % self.save_freq == 0 and save_model_checkpoint:
-            path = self.path_logs + self.name_save
+            path = self.path_logs + self.name_save.format(epoch=epoch+1)
             self.model.save_weights(path)
             wandb.save(path)
             os.remove(path)
