@@ -1,4 +1,4 @@
-import cv2
+import cv2, tqdm
 import tensorflow as tf, os, datetime
 from keras import optimizers, losses, Model, applications, metrics
 from keras.layers import Flatten, Dense, Dropout
@@ -207,7 +207,7 @@ class VGG16_TFLite(VGG16):
     def predict_in_evaluate(self, dataset=None): 
         all_y_target = []
         all_y_pred = []
-        for _, (X, y) in enumerate(dataset):
+        for _, (X, y) in tqdm.tqdm(enumerate(dataset)):
             output_tf  = self.__invoke(X)
             for i, _ in enumerate(output_tf):
                 all_y_pred.append(tf.math.argmax(output_tf, axis=-1)[i].numpy())
