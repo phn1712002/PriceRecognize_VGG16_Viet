@@ -185,10 +185,10 @@ class VGG16_TFLite(VGG16):
             path_json_class_names = path + name_file + '_class_names.json'
             path_json_config = path + name_file + '.json'
             
-            config_model = loadJson(path=path_json_config)
+            self.config_model = loadJson(path=path_json_config)
             config_class_names = loadJson(path=path_json_class_names)
             class_names = text.tokenizer_from_json(config_class_names)
-            super().__init__(class_names=class_names, **config_model)
+            super().__init__(class_names=class_names, **self.config_model)
         else:
             raise RuntimeError('Model load error')
     
@@ -208,7 +208,7 @@ class VGG16_TFLite(VGG16):
     def predict_in_evaluate(self, dataset=None): 
         all_y_target = []
         all_y_pred = []
-        for _, (X, y) in tqdm(enumerate(dataset)):
+        for _, (X, y) in enumerate(dataset):
             output_tf  = self.__invoke(X)
             for i, _ in enumerate(output_tf):
                 all_y_pred.append(tf.math.argmax(output_tf, axis=-1)[i].numpy())

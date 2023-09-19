@@ -14,36 +14,21 @@ import seaborn as sns
 PATH_CONFIG = './config.json'
 PATH_DATASET = './Dataset/'
 PATH_REPORT = './Report/'
+PATH_EXPORT = './Checkpoint/export/'
+NAME_TFLITE = 'VGG16'
 
 # Create Folder
 createFolder(PATH_REPORT)
 
-# Get config
-config = loadJson(PATH_CONFIG)
-if not config == None:
-    keys_to_check = ['config_model', 'config_dataset']
-    if all(key in config for key in keys_to_check):
-        config_model = config['config_model']
-        config_dataset = config['config_dataset']
-    else:
-        raise RuntimeError("Error config")
-
 # Load dataset
-train_dataset_raw, _, test_dataset_raw = PriceRecognize_Dataset_Vietnamese(path=PATH_DATASET)()
-
-# Init class names
-class_names = tf.keras.preprocessing.text.Tokenizer()
-class_names.fit_on_texts(train_dataset_raw[1])
-
-# Create pipeline 
-pipeline = PriceRecognize_VGG16(class_names=class_names, config_model=config_model)
-
-# Create dataset
-test_dataset = PriceRecognize_VGG16(class_names=class_names, 
-                                   config_model=config_model)(dataset=test_dataset_raw, batch_size=config_dataset['batch_size_test'])
+_, _, test_dataset_raw = PriceRecognize_Dataset_Vietnamese(path=PATH_DATASET)()
 
 # Model
-model = VGG16_TFLite().build()
+model = VGG16_TFLite(path=PATH_EXPORT, name_file=NAME_TFLITE).build()
+
+# Create dataset
+test_dataset = PriceRecognize_VGG16(class_names=model.class_names, 
+                                   config_model=model.config_model)(dataset=test_dataset_raw, batch_size=10)
 
 # Evaluate 
 y_true, y_pred = model.predict_in_evaluate(test_dataset)
@@ -59,7 +44,7 @@ mcm = multilabel_confusion_matrix(y_true, y_pred)
 
 # Plot confusion matrix
 plt.figure(figsize=(10, 8))
-for i, class_name in enumerate(class_names.classes_):
+for i, class_name in enumerate(model.class_names.classes_):
     plt.subplot(2, 3, i + 1)
     sns.heatmap(mcm[i], annot=True, fmt='d', cmap='Blues', cbar=False)
     plt.title(f'Confusion Matrix for {class_name}')
@@ -72,5 +57,5 @@ plt.show()
 # Save the plot as an image
 path_multilabel_confusion_matrix = PATH_REPORT + 'multilabel_confusion_matrix.png'
 plt.savefig(path_multilabel_confusion_matrix)
-print(f"Save multilabel confusion matrix in {path_classification_report}")
+print(f"Save multilabel confusion matrix in {path_multilabel_confusion_matrix}")
 
