@@ -3,11 +3,11 @@ import shutil
 import random
 
 # Đường dẫn đến thư mục gốc chứa các thư mục con
-root_dir = './Dataset/raw/archive'
+root_dir = './raw/'
 
 # Đường dẫn đến thư mục đích cho tập train và test
-train_dir = './Dataset/train'
-test_dir = './Dataset/test'
+train_dir = './train'
+test_dir = './test'
 
 # Tỷ lệ dữ liệu được sử dụng cho tập test
 test_ratio = 0.1

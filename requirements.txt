@@ -9,4 +9,6 @@ wandb
 tqdm
 pyclean
 psutil
+matplotlib
+seaborn
 git+https://github.com/jarvislabsai/jlclient.git

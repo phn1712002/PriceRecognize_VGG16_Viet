@@ -1,6 +1,7 @@
 import cv2
 import tensorflow as tf, os, datetime
-from keras import optimizers, losses, Model, Input, applications, metrics
+from tqdm import tqdm
+from keras import optimizers, losses, Model, applications, metrics
 from keras.layers import Flatten, Dense, Dropout
 from keras.preprocessing import text
 from Tools.Json import saveJson, loadJson
@@ -98,8 +99,8 @@ class VGG16(CustomModel):
         output = self.decoderLable(output_tf)
         return output
 
-    def standardizedImage(self, image_tf):
-        image = tf.convert_to_tensor(cv2.resize(image_tf, (self.image_size[0], self.image_size[1]), interpolation = cv2.INTER_AREA), dtype=tf.float32)
+    def standardizedImage(self, image_input):
+        image = tf.convert_to_tensor(cv2.resize(image_input, (self.image_size[0], self.image_size[1]), interpolation = cv2.INTER_AREA), dtype=tf.float32)
         image = tf.cast(image/255.0, tf.float32)
         return image
     
@@ -204,9 +205,25 @@ class VGG16_TFLite(VGG16):
         output = super().decoderLable(output_tf)
         return output
     
+    def predict_in_evaluate(self, dataset=None): 
+        all_y_target = []
+        all_y_pred = []
+        for _, (X, y) in tqdm(enumerate(dataset)):
+            output_tf  = self.__invoke(X)
+            for i, _ in enumerate(output_tf):
+                all_y_pred.append(tf.math.argmax(output_tf, axis=-1)[i].numpy())
+                all_y_target.append(tf.math.argmax(y, axis=-1)[i].numpy())
+            
+        return all_y_target, all_y_pred
+    
     def __invoke(self, input_tf):
         model = self.model
-        input_tf = tf.expand_dims(input_tf, axis=0)
+        
+        if input_tf.shape[0] == 1: 
+            input_tf = tf.expand_dims(input_tf, axis=0)
+        else: 
+            model.resize_tensor_input(self.index_input, tensor_size=input_tf.shape)
+            
         model.allocate_tensors()
         model.set_tensor(self.index_input, tf.cast(input_tf, dtype=self.dtype_input))
         model.invoke()
