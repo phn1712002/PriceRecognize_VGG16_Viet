@@ -6,7 +6,6 @@ imutils
 numpy
 scikit-learn
 wandb
-tqdm
 pyclean
 psutil
 matplotlib

@@ -1,6 +1,5 @@
 import cv2
 import tensorflow as tf, os, datetime
-from tqdm import tqdm
 from keras import optimizers, losses, Model, applications, metrics
 from keras.layers import Flatten, Dense, Dropout
 from keras.preprocessing import text
