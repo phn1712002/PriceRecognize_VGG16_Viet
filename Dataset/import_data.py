@@ -32,7 +32,7 @@ while True:
 
         current_time = datetime.datetime.now()
         file_name = current_time.strftime("%Y-%m-%d_%H-%M-%S.png")
-        cv2.imwrite('data/' + str(label) + "/" + file_name, frame)
+        cv2.imwrite('raw/' + str(label) + "/" + file_name, frame)
         i = 0  # Đặt lại biến đếm sau khi lưu hình ảnh
         print(f"Save pic {count}")
         count += 1
