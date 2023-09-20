@@ -5,7 +5,7 @@ from Dataset.CreateDataset import PriceRecognize_Dataset_Vietnamese
 from Architecture.Pipeline import PriceRecognize_VGG16
 from Optimizers.OptimizersVGG16 import CustomOptimizers
 from Callbacks.WandB import CustomCallbacksWandB
-from keras.callbacks import ModelCheckpoint, TensorBoard
+from keras.callbacks import ModelCheckpoint, TensorBoard, TerminateOnNaN
 from Tools.Json import loadJson
 from Tools.Folder import createFolder
 from jlclient import jarvisclient
@@ -83,7 +83,8 @@ opt_VGG16 = CustomOptimizers(**config_opt)()
 # Callbacks
 NAME_TIME = time.strftime("%Y%m%d-%H%M%S-")
 tensorBoard_callbacks = TensorBoard(log_dir=PATH_TENSORBOARD)
-callbacks = [tensorBoard_callbacks]
+terminateOnNaN_callbacks = TerminateOnNaN()
+callbacks = [tensorBoard_callbacks, terminateOnNaN_callbacks]
 
 if config['config_wandb']['using'] == True:
     os.environ['WANDB_API_KEY'] = config['config_wandb']['api_key']
