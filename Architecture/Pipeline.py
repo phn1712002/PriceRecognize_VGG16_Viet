@@ -1,7 +1,7 @@
 import cv2
 import tensorflow as tf
 from Architecture.Model import VGG16
-from albumentations import Compose, RandomBrightnessContrast, HueSaturationValue, RandomContrast, Rotate
+from albumentations import Compose, ShiftScaleRotate, Flip, PixelDropout, RandomBrightness, RingingOvershoot
 from keras.utils import to_categorical
 
 class PriceRecognize_VGG16(VGG16):
@@ -14,7 +14,11 @@ class PriceRecognize_VGG16(VGG16):
         
         if not config_augments is None:
             self.transforms = Compose([
-                Rotate(**config_augments['Rotate']),
+                PixelDropout(**config_augments['PixelDropout']),
+                #RandomBrightness(**config_augments['RandomBrightness']),
+                RingingOvershoot(**config_augments['RingingOvershoot']),
+                ShiftScaleRotate(**config_augments['ShiftScaleRotate']),
+                Flip(**config_augments['Flip'])
             ])
             self.check_augments = tf.constant(True, dtype=tf.bool)
         

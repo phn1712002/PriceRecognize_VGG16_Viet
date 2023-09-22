@@ -7,8 +7,6 @@ from Tools.Json import saveJson
 from Tools.Folder import createFolder
 from sklearn.metrics import classification_report
 from sklearn.metrics import multilabel_confusion_matrix
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Environment Variables
 PATH_CONFIG = './config.json'

@@ -11,4 +11,5 @@ pyclean
 psutil
 matplotlib
 seaborn
+keyboard
 git+https://github.com/jarvislabsai/jlclient.git

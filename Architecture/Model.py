@@ -229,7 +229,7 @@ class VGG16_TFLite(VGG16):
     def __invoke(self, input_tf):
         model = self.model
         
-        if input_tf.shape[0] == 1: 
+        if not input_tf.shape[0] == 1: 
             input_tf = tf.expand_dims(input_tf, axis=0)
         else: 
             model.resize_tensor_input(self.index_input, tensor_size=input_tf.shape)
