@@ -1,4 +1,4 @@
-import keyboard, cv2
+import keyboard
 from Architecture.Model import VGG16_TFLite
 from Device.adruino import UnoR3
 from Device.peripherals import Camera
