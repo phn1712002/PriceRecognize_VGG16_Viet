@@ -16,7 +16,7 @@
         "freeze": true,
         "transfer_learning": false,
         "num_layers": 2, 
-        "hidden_layers": 4096,
+        "num_units": 4096,
         "rate_dropout": 0.5,
         "image_size": [224, 224, 3]
     },

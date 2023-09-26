@@ -1,9 +1,8 @@
-import cv2
-import os
-import datetime
+import cv2, keyboard, os, datetime, time
 
 # Label: 00000 là không cầm tiền, còn lại là các mệnh giá
-label = "0000"
+label = "1000"
+path = "D:/_Source/Working/AI/PriceRecognize_VGG16_Viet/Dataset/raw/"
 
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)  # Đặt chiều rộng tối đa
@@ -25,20 +24,21 @@ while True:
     cv2.imshow('frame', frame)
 
     # Lưu dữ liệu khi nhấn Enter
-    if cv2.waitKey(1) == 13:  # Enter key
+    if cv2.waitKey(1) and keyboard.is_pressed('enter'):  # Enter key
         # Tạo thư mục nếu chưa có
-        if not os.path.exists('data/' + str(label)):
-            os.mkdir('data/' + str(label))
+        if not os.path.exists(path + str(label)):
+            os.mkdir(path + str(label))
 
         current_time = datetime.datetime.now()
         file_name = current_time.strftime("%Y-%m-%d_%H-%M-%S.png")
-        cv2.imwrite('raw/' + str(label) + "/" + file_name, frame)
+        cv2.imwrite(path + str(label) + '/' + file_name, frame)
         i = 0  # Đặt lại biến đếm sau khi lưu hình ảnh
         print(f"Save pic {count}")
         count += 1
+        time.sleep(1)
         
     # Thoát vòng lặp khi nhấn 'q'
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(1) and keyboard.is_pressed('esc'):
         break
 
 # Giải phóng tài nguyên và đóng cửa sổ

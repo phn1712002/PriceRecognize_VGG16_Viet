@@ -1,11 +1,11 @@
-import keyboard
+import keyboard, cv2
 from Architecture.Model import VGG16_TFLite
 from Device.adruino import UnoR3
 from Device.peripherals import Camera
 
 cam = Camera(COM=0)
 model = VGG16_TFLite().build()
-board = UnoR3(COM="COM6")
+board = UnoR3(COM="COM4")
 
 
 while True:

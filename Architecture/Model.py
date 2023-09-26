@@ -18,7 +18,7 @@ class VGG16(CustomModel):
                  freeze=True,
                  transfer_learning=False,
                  num_layers=2,
-                 hidden_layers=4096,
+                 num_units=4096,
                  rate_dropout=0.5,
                  image_size=(128, 128, 3),
                  opt=optimizers.Adam(), 
@@ -30,7 +30,7 @@ class VGG16(CustomModel):
         self.name = name
         self.image_size = tuple(image_size)
         self.num_layers = num_layers
-        self.hidden_layers = hidden_layers
+        self.num_units = num_units
         self.rate_dropout = rate_dropout
         self.class_names = class_names
         self.num_lables = len(class_names.index_word) + 1
@@ -56,21 +56,21 @@ class VGG16(CustomModel):
             # Thêm vào các FC layers 
             x = Flatten(name='flatten')(model_vgg16_conv.get_layer('block5_pool').output)
             
-            hidden_layers = None
+            num_units = None
             rate_dropout = None
             for i in range(0, self.num_layers):
                 
-                if isinstance(self.hidden_layers, list): 
-                    if i > len(self.hidden_layers): hidden_layers = self.hidden_layers[-1]
-                    else: hidden_layers = self.hidden_layers[i]
-                else: hidden_layers = self.hidden_layers
+                if isinstance(self.num_units, list): 
+                    if i > len(self.num_units): num_units = self.num_units[-1]
+                    else: num_units = self.num_units[i]
+                else: num_units = self.num_units
                     
                 if isinstance(self.rate_dropout, list): 
                     if i > len(self.rate_dropout): rate_dropout = self.rate_dropout[-1]
                     else: rate_dropout = self.rate_dropout[i]
                 else: rate_dropout = self.rate_dropout
 
-                x = Dense(hidden_layers, activation='relu', name=f'fc_{i + 1}')(x)
+                x = Dense(num_units, activation='relu', name=f'fc_{i + 1}')(x)
                 x = Dropout(rate_dropout, name=f'dropout_{i + 1}')(x)
                     
                     
@@ -124,7 +124,7 @@ class VGG16(CustomModel):
             'name': self.name,
             'image_size': self.image_size,
             'num_layers': self.num_layers,
-            'hidden_layers': self.hidden_layers,
+            'num_units': self.num_units,
             'rate_dropout': self.rate_dropout
         }
         
