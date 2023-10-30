@@ -1,7 +1,7 @@
 import cv2, keyboard, os, datetime, time
 
 # Label: 00000 là không cầm tiền, còn lại là các mệnh giá
-label = "1000"
+label = "200000"
 path = "D:/_Source/Working/AI/PriceRecognize_VGG16_Viet/Dataset/raw/"
 
 cap = cv2.VideoCapture(0)
@@ -44,6 +44,3 @@ while True:
 # Giải phóng tài nguyên và đóng cửa sổ
 cap.release()
 cv2.destroyAllWindows()
-
-
-
