@@ -4,7 +4,7 @@ from Device.adruino import UnoR3
 from Device.peripherals import Camera
 
 cam = Camera(COM=0)
-model = VGG16_TFLite().build()
+model = VGG16_TFLite(path='./Checkpoint/save/').build()
 board = UnoR3(COM="COM4")
 
 
