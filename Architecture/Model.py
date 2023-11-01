@@ -1,9 +1,10 @@
-import cv2, tqdm
+import cv2, tqdm, threading, time
 import tensorflow as tf, os, datetime
 from keras import optimizers, losses, Model, applications, metrics
 from keras.layers import Flatten, Dense, Dropout
 from keras.preprocessing import text
 from Tools.Json import saveJson, loadJson
+from Device.peripherals import Camera
 
 class CustomModel:
     def __init__(self, model=None, opt=None, loss=None):
@@ -214,6 +215,33 @@ class VGG16_TFLite(VGG16):
         output_tf  = self.__invoke(image_input_tf)
         output = super().decoderLable(output_tf)
         return output
+    
+    def predict_with_showCam(self, cam: Camera, func_print_info=None, time_send_predict=1, key_stop='q'):
+        
+        def classification(frame, model, func_print_info):
+            currency = model.predict(frame)
+            if func_print_info is None: print(currency)
+            else: func_print_info(currency)
+        
+        check_stop = False
+        reset = True
+        classification_thread = None
+        while not check_stop:
+            
+            current_time = time.time() 
+            if reset:
+                elapsed_time = current_time + time_send_predict
+                reset = False
+                
+            frame = cam.getFrame()
+            check_stop = cam.showFrame(frame=frame, name_windown='WebCam', key_stop=key_stop)
+            
+            if current_time >= elapsed_time:
+                if not classification_thread is None: classification_thread.join()
+                classification_thread = threading.Thread(target=classification, args=(frame, self, func_print_info))
+                classification_thread.start()
+                reset = True
+         
     
     def predict_on_evaluate(self, dataset=None): 
         all_y_target = []
