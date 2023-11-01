@@ -1,4 +1,3 @@
-import threading, time
 from Architecture.Model import VGG16_TFLite
 from Device.peripherals import Camera
 
