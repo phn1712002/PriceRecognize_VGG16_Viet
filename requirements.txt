@@ -12,4 +12,5 @@ psutil
 matplotlib
 seaborn
 keyboard
+netron
 git+https://github.com/jarvislabsai/jlclient.git
