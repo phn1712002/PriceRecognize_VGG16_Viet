@@ -1,7 +1,23 @@
+import sys
+import os
+
+# Get the path to the root directory
+root_path = os.path.dirname(os.path.abspath(__file__))
+
+# Get all subdirectories in the root directory
+subdirectories = [dI for dI in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, dI))]
+
+# Add all subdirectories to sys.path
+for directory in subdirectories:
+    dir_path = os.path.join(root_path, directory)
+    sys.path.append(dir_path)
+
+# Testing
 import tensorflow as tf, cv2
 from Dataset.CreateDataset import PriceRecognize_Dataset_Vietnamese
 from Architecture.Pipeline import PriceRecognize_VGG16
 from Tools.Json import loadJson
+
 
 # Environment Variables
 PATH_CONFIG = './config.json'
