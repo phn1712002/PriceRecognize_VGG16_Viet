@@ -2,6 +2,7 @@ import argparse
 from Tools.View import viewArchitectureAI
 
 PATH_TFLITE = './Checkpoint/save/'
+MY_PORT = 1712
 
 # Argparse
 parser = argparse.ArgumentParser()
@@ -10,7 +11,7 @@ args = parser.parse_args()
 
 # Pretrain
 if args.path_file == '':
-    viewArchitectureAI(PATH_TFLITE)
+    viewArchitectureAI(PATH_TFLITE, port=MY_PORT)
 else: 
-    viewArchitectureAI(args.path_file)
+    viewArchitectureAI(args.path_file, port=MY_PORT)
     
