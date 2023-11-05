@@ -254,8 +254,10 @@ class VGG16_TFLite(VGG16):
             if reset:
                 elapsed_time = current_time + time_send_predict
                 reset = False
-                
+              
+            # Get frames  
             frame = cam.getFrame()
+            # Print output
             if not self.currency_current is None: frame = cv2.putText(frame, str(self.currency_current), **setting_text_output)
             check_stop = cam.showFrame(frame=frame, name_windown='Price VND Recognize', key_stop=key_stop)
             

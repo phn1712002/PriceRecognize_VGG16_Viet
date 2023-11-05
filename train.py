@@ -1,5 +1,5 @@
 
-import tensorflow as tf, warnings, wandb, argparse, time, os, cv2
+import tensorflow as tf, warnings, wandb, argparse, time, os
 from Architecture.Model import VGG16
 from Dataset.CreateDataset import PriceRecognize_Dataset_Vietnamese
 from Architecture.Pipeline import PriceRecognize_VGG16
