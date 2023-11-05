@@ -2,7 +2,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def sendEmail(sender_email, sender_password, receiver_email, subject, body, smtp_server='smtp.gmail.com', port=587, ):
+def sendEmail(sender_email, sender_password, receiver_email, subject, body, smtp_server='smtp.gmail.com', port=587):
     # Tạo một đối tượng message
     message = MIMEMultipart() 
     message['From'] = sender_email 
