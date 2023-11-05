@@ -39,46 +39,46 @@ class VGG16(CustomModel):
         
     def build(self, summary=False):
         strategy = tf.distribute.MirroredStrategy()
-        #with strategy.scope():
-        #input = Input(shape=self.image_size, name='input')
-        
-        # Transfer Learning
-        if self.transfer_learning:
-            model_vgg16_conv = applications.VGG16(input_shape=self.image_size, weights='imagenet')
-            # Đóng băng các layers
-            if self.freeze:
-                for layer in model_vgg16_conv.layers:
-                    layer.trainable = False
-        else: 
-            model_vgg16_conv = applications.VGG16(input_shape=self.image_size, weights=None)
-                    
-        #output_vgg16_conv = model_vgg16_conv(input)
-        
-        # Thêm vào các FC layers 
-        x = Flatten(name='flatten')(model_vgg16_conv.get_layer('block5_pool').output)
-        
-        num_units = None
-        rate_dropout = None
-        for i in range(0, self.num_layers):
+        with strategy.scope():
+            #input = Input(shape=self.image_size, name='input')
             
-            if isinstance(self.num_units, list): 
-                if i > len(self.num_units): num_units = self.num_units[-1]
-                else: num_units = self.num_units[i]
-            else: num_units = self.num_units
+            # Transfer Learning
+            if self.transfer_learning:
+                model_vgg16_conv = applications.VGG16(input_shape=self.image_size, weights='imagenet')
+                # Đóng băng các layers
+                if self.freeze:
+                    for layer in model_vgg16_conv.layers:
+                        layer.trainable = False
+            else: 
+                model_vgg16_conv = applications.VGG16(input_shape=self.image_size, weights=None)
+                     
+            #output_vgg16_conv = model_vgg16_conv(input)
+            
+            # Thêm vào các FC layers 
+            x = Flatten(name='flatten')(model_vgg16_conv.get_layer('block5_pool').output)
+            
+            num_units = None
+            rate_dropout = None
+            for i in range(0, self.num_layers):
                 
-            if isinstance(self.rate_dropout, list): 
-                if i > len(self.rate_dropout): rate_dropout = self.rate_dropout[-1]
-                else: rate_dropout = self.rate_dropout[i]
-            else: rate_dropout = self.rate_dropout
+                if isinstance(self.num_units, list): 
+                    if i > len(self.num_units): num_units = self.num_units[-1]
+                    else: num_units = self.num_units[i]
+                else: num_units = self.num_units
+                    
+                if isinstance(self.rate_dropout, list): 
+                    if i > len(self.rate_dropout): rate_dropout = self.rate_dropout[-1]
+                    else: rate_dropout = self.rate_dropout[i]
+                else: rate_dropout = self.rate_dropout
 
-            x = Dense(num_units, activation='relu', name=f'fc_{i + 1}')(x)
-            x = Dropout(rate_dropout, name=f'dropout_{i + 1}')(x)
-                
-                
-        output = Dense(self.num_lables, activation='softmax', name='output')(x)
-        
-        self.model = Model(inputs=model_vgg16_conv.inputs, outputs=output, name=self.name)
-        self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.CategoricalAccuracy()])
+                x = Dense(num_units, activation='relu', name=f'fc_{i + 1}')(x)
+                x = Dropout(rate_dropout, name=f'dropout_{i + 1}')(x)
+                    
+                    
+            output = Dense(self.num_lables, activation='softmax', name='output')(x)
+            
+            self.model = Model(inputs=model_vgg16_conv.inputs, outputs=output, name=self.name)
+            self.model.compile(optimizer=self.opt, loss=self.loss, metrics=[metrics.CategoricalAccuracy()])
         
         if summary:
             self.model.summary()
