@@ -33,9 +33,6 @@ except ValueError:
 else:
     # Continuously monitor the entered PID
     while True:
-        # Stop with esc
-        if keyboard.is_pressed('esc'): break
-        
         if psutil.pid_exists(pid_to_check):
             # Retrieve information about the process with the provided PID
             process = psutil.Process(pid_to_check)
