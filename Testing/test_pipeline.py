@@ -1,5 +1,5 @@
 # Testing
-import tensorflow as tf, cv2
+import tensorflow as tf, cv2, keyboard
 from Dataset.CreateDataset import PriceRecognize_Dataset_Vietnamese
 from Architecture.Pipeline import PriceRecognize_VGG16
 from Tools.Json import loadJson
