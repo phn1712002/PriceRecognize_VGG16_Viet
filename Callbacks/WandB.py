@@ -66,7 +66,7 @@ class CustomCallbacksWandB(Callback):
             wandb.save(path)
             if self.verbose == 1:
                 print(f"Save weights epoch {current_epoch} - {path}" )
-           
+        """  
         # Print one data in dev
         tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output Target", "Output Pred"])
         for X, Y in self.dataset.take(1):
@@ -85,6 +85,6 @@ class CustomCallbacksWandB(Callback):
             
         tableOutputPredict.add_data(current_epoch, image_input_wandb, output_target, output_pred)
         wandb.log({'Predict': tableOutputPredict}) 
-        
+        """ 
         
        
