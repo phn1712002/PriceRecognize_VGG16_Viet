@@ -56,3 +56,7 @@ else:
             jarvisclient.user_id = config_jarvislabs['user_id']
             instance = User.get_instances()[0]
             instance.pause()  # Pause Jarvis instance
+            sendEmail(config_check_stop['sender_email'], 
+                      config_check_stop['sender_password'], 
+                      config_check_stop['receiver_email'], 'ServerAI', 
+                      "ServerAI stop training")
