@@ -1,61 +1,57 @@
 import cv2
 import tensorflow as tf
 from Architecture.Model import VGG16
-from albumentations import Compose, ShiftScaleRotate, Flip, PixelDropout, RandomBrightness, RingingOvershoot
+from albumentations import Compose, ShiftScaleRotate, Flip, GaussNoise
 from keras.utils import to_categorical
+from keras.preprocessing.text import Tokenizer
 
 class PriceRecognize_VGG16(VGG16):
     def __init__(self, class_names=None, config_augments=None, config_model=None):
-        super().__init__(opt=None, loss=None, class_names=class_names,**config_model)
-        
-        self.check_augments = tf.constant(False, dtype=tf.bool)
-        self.transforms = None
+        super().__init__(**config_model)  # provide necessary parameters as per the needs
         self.config_augments = config_augments
-        
-        if not config_augments is None:
-            self.transforms = Compose([
-                PixelDropout(**config_augments['PixelDropout']),
-                #RandomBrightness(**config_augments['RandomBrightness']),
-                RingingOvershoot(**config_augments['RingingOvershoot']),
-                ShiftScaleRotate(**config_augments['ShiftScaleRotate']),
-                Flip(**config_augments['Flip'])
+        self.transforms = self._create_transforms() if self.config_augments else None
+        self.check_augments = tf.constant(bool(self.transforms), dtype=tf.bool)
+        self.tokenizer = Tokenizer()
+
+        self.tokenizer.fit_on_texts(class_names) if class_names else None
+        self.num_classes = len(self.tokenizer.word_index)
+
+    def _create_transforms(self):
+        if isinstance(self.config_augments, dict) and all(key in self.config_augments for key in ['GaussNoise', 'ShiftScaleRotate', 'Flip']):
+            return Compose([
+                GaussNoise(**self.config_augments['GaussNoise']),
+                ShiftScaleRotate(**self.config_augments['ShiftScaleRotate']),
+                Flip(**self.config_augments['Flip'])
             ])
-            self.check_augments = tf.constant(True, dtype=tf.bool)
-        
-    def augmentsImage(self, image=None):
-        aug_data = self.transforms(image=image)
-        aug_img = aug_data["image"]
-        aug_img = tf.image.resize(aug_img, (self.image_size[0], self.image_size[1]))
-        return aug_img
-    
-    def loadImage(self, image_path):
+        else:
+            return None
+
+    def load_and_resize_image(self, image_path):
         image_path = image_path.numpy().decode()
         image = cv2.imread(image_path)
-        image = cv2.resize(image, (self.image_size[0], self.image_size[1]), interpolation = cv2.INTER_AREA)
-        return tf.convert_to_tensor(image, dtype=tf.float32)
-    
-    def encoderLable(self, lable):
-        lable = lable.numpy().decode()
-        lable = self.class_names.texts_to_sequences([lable])
-        lable = tf.convert_to_tensor(lable)
-        lable = tf.squeeze(lable)
-        lable = to_categorical(lable, num_classes=self.num_lables, dtype='int32')
-        return tf.convert_to_tensor(lable, dtype=tf.int32)
-     
-    def mapProcessing(self, path, lable):
-        image = tf.py_function(func=self.loadImage, inp=[path], Tout=tf.float32)
-        image = tf.cond(
-            self.check_augments == True, 
-            lambda: tf.numpy_function(func=self.augmentsImage, inp=[image], Tout=tf.float32),
-            lambda: image
-            )
+        return cv2.resize(image, (self.image_size[0], self.image_size[1]), interpolation=cv2.INTER_AREA)  # check here for image size
+
+    def augment_image(self, image):
+        aug_data = self.transforms(image=image.numpy())
+        return aug_data['image'] 
+
+    def encoderLabel(self, label): 
+        label = label.numpy().decode()
+        label_seq = self.tokenizer.texts_to_sequences([label])
+        label_seq = [item for sublist in label_seq for item in sublist] 
+        return to_categorical(label_seq, num_classes=self.num_classes, dtype='int32')
+
+    def mapProcessing(self, path, label):
+        image = tf.py_function(func=self.load_and_resize_image, inp=[path], Tout=tf.float32)
+        if self.check_augments:
+            image = tf.numpy_function(func=self.augment_image, inp=[image], Tout=tf.float32)
         image = tf.cast(image/255.0, tf.float32)
-        lable = tf.py_function(self.encoderLable, inp=[lable], Tout=tf.int32)
-        return image, lable
-    
+        label = tf.py_function(self.encoderLabel, inp=[label], Tout=tf.int32)
+        return image, label
+
     def __call__(self, dataset=None, batch_size=1):
-        data = tf.data.Dataset.from_tensor_slices(dataset)
-        data = (data.map(self.mapProcessing, num_parallel_calls=tf.data.AUTOTUNE)
+        data = (tf.data.Dataset.from_tensor_slices((dataset))
+                .map(self.mapProcessing, num_parallel_calls=tf.data.AUTOTUNE)
                 .shuffle(buffer_size=batch_size, reshuffle_each_iteration=True)
                 .batch(batch_size)
                 .prefetch(buffer_size=tf.data.AUTOTUNE))
