@@ -42,6 +42,9 @@ class CustomCallbacksWandB(Callback):
         # Save logs 
         wandb.log(logs)
         
+        # Save graph
+        if current_epoch == 1: wandb.run.summary["graph"] = wandb.Graph.from_keras(self.model)
+        
         # Checkpoint
         save_model_checkpoint = False
         if self.mode == 'min':
