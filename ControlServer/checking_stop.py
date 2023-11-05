@@ -1,15 +1,19 @@
 import time, psutil, subprocess, keyboard
+from Tools.Gmail import sendEmail
 from Tools.Json import loadJson
 from jlclient import jarvisclient
 from jlclient.jarvisclient import *
 
+
+
 # Environment Variables
 PATH_CONFIG = './config.json'
-sleep_duration = 60
+sleep_duration = 60 * 5
 
 # Execute 'ps -ef' command on a Linux terminal
 processes = subprocess.run(['ps', '-ef'], stdout=subprocess.PIPE, text=True)
 print(processes.stdout)  # Display the list of running processes
+
 
 # Get configuration details
 config = loadJson(PATH_CONFIG)
@@ -25,6 +29,12 @@ if not config == None:
 print("-"*100)
 pid_to_check = input("Enter PID: ")
 print("-"*100)
+# Input info gmail
+sender_email = input("Enter gmail sender: ")
+sender_password = ("Enter gmail sender pass: ")
+receiver_email = input("Enter gmail receiver: ")
+print("-"*100)
+
 
 try:
     pid_to_check = int(pid_to_check)
@@ -37,7 +47,9 @@ else:
             # Retrieve information about the process with the provided PID
             process = psutil.Process(pid_to_check)
             time_now = time.strftime("%Y%m%d-%H%M%S")
-            print(f"PID {pid_to_check} is running at time {time_now}")
+            str_print = f"PID {pid_to_check} is running at time {time_now}"
+            print(str_print)
+            sendEmail(sender_email, sender_password, receiver_email, 'ServerAI', str_print)
             time.sleep(sleep_duration)
         else:
             # If the provided PID is not running, pause the Jarvis instance
