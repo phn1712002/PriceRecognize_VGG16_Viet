@@ -1,6 +1,8 @@
 {
     "config_camera":{
-        "COM": 0
+        "COM": 0,
+        "flip": false,
+        "resolution": [1280, 720]
     },
     "config_arduino":{
         "COM": "COM4"
