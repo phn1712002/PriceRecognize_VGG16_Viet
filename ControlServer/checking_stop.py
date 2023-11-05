@@ -1,4 +1,4 @@
-import time, psutil, subprocess, keyboard
+import time, psutil, subprocess
 from Tools.Gmail import sendEmail
 from Tools.Json import loadJson
 from jlclient import jarvisclient
