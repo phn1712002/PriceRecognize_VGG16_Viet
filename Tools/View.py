@@ -13,7 +13,7 @@ def _viewNetron(name_file, port):
     netron.start(file=name_file, address=port)  
 
 
-def viewArchitectureAI(path, port=8080):
+def viewArchitectureAI(path, port=8080, file_format_extension='.tflite'):
     # Get all name file in Directory
     files = showFilesInDirectory(path)
     
@@ -24,7 +24,7 @@ def viewArchitectureAI(path, port=8080):
     if files.__class__ is list:
         
         # Filtered all file .tflite
-        filtered_files = [file for file in files if file[0].endswith('.tflite')]
+        filtered_files = [file for file in files if file[0].endswith(file_format_extension)]
         
         if len(filtered_files) > 1:
             # View index all file
@@ -49,11 +49,11 @@ def viewArchitectureAI(path, port=8080):
          
     # View
     view_thread = threading.Thread(target=_viewNetron, args=(name_file, port, ))
-    view_thread.start()
     stop_thread = threading.Thread(target=_stopNetron, args=(port,))
-    stop_thread.start()
     
-    # Waith
+    # Wait
+    stop_thread.start()
+    view_thread.start()
     view_thread.join()
     stop_thread.join()
     
