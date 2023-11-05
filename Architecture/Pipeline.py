@@ -31,7 +31,7 @@ class PriceRecognize_VGG16(VGG16):
         image = cv2.imread(image_path)
         return cv2.resize(image, (self.image_size[0], self.image_size[1]), interpolation=cv2.INTER_AREA)  # check here for image size
     
-    def encoderlabel(self, label):
+    def encoderLabel(self, label):
         label = label.numpy().decode()
         label_seq = self.tokenizer.texts_to_sequences([label])
         label_seq = [item for sublist in label_seq for item in sublist] 
