@@ -7,7 +7,6 @@ from Optimizers.OptimizersVGG16 import CustomOptimizers
 from Callbacks.WandB import CustomCallbacksWandB
 from keras.callbacks import ModelCheckpoint, TensorBoard, TerminateOnNaN
 from Tools.Json import loadJson
-from Tools.Folder import createFolder
 from jlclient import jarvisclient
 from jlclient.jarvisclient import User
 
@@ -19,11 +18,6 @@ PATH_DATASET = './Dataset/'
 PATH_LOGS = './Checkpoint/logs/'
 PATH_TENSORBOARD = './Checkpoint/tensorboard/'
 PATH_TFLITE = './Checkpoint/export/'
-
-# Create Folder
-createFolder(PATH_LOGS)
-createFolder(PATH_TENSORBOARD)
-createFolder(PATH_TFLITE)
 
 
 # Argparse
