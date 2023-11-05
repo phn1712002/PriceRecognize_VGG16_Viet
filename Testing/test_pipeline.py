@@ -40,6 +40,7 @@ train_dataset = PriceRecognize_VGG16(class_names=class_names,
 # Check Pipeline
 while True:
     for X, Y in train_dataset.take(1):
+        print(f"X_Shape: {X.shape}, Y_Shape: {Y.shape}")
         if not X.shape[0] == 1:
             index = 0
             X = X[index]

@@ -89,7 +89,7 @@ class VGG16(CustomModel):
         self.model.fit(train_dataset,
                        validation_data=dev_dataset,
                        epochs=epochs,
-                       callbacks=callbacks)
+                       callbacks=callbacks, verbose=2)
         
         return self
     
