@@ -31,7 +31,7 @@ pid_to_check = input("Enter PID: ")
 print("-"*100)
 # Input info gmail
 sender_email = input("Enter gmail sender: ")
-sender_password = ("Enter gmail sender pass: ")
+sender_password = input("Enter gmail sender pass: ")
 receiver_email = input("Enter gmail receiver: ")
 print("-"*100)
 
