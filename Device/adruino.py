@@ -11,5 +11,5 @@ class UnoR3:
         self.ser.close()
     
     def writeLCD(self, messenger):
-        messenger = messenger + '\n'
+        messenger = str(messenger) + '\n'
         self.ser.write(messenger.encode())

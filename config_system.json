@@ -1,0 +1,12 @@
+{
+    "config_camera":{
+        "COM": 0
+    },
+    "config_arduino":{
+        "COM": "COM4"
+    },
+    "config_model":{
+        "path": "./Checkpoint/save/",
+        "name_file": "VGG16"
+    }
+}

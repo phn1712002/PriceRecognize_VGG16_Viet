@@ -14,6 +14,7 @@ class CustomCallbacksWandB(Callback):
                  path_logs='./Checkpoint/logs/', 
                  dataset=None):
         
+        # Public
         super().__init__()
         self.dataset = dataset
         self.path_logs = path_logs
@@ -26,31 +27,41 @@ class CustomCallbacksWandB(Callback):
         self.verbose = verbose
         if save_freq == 'epoch':
             self.save_freq = 1
-        else: 
-            self.save_freq = save_freq
+        else:
+            if save_freq > 0: self.save_freq = save_freq
+            else: self.save_freq = 1
+    
+        # Private
+        self._epoch_save = self.save_freq
         
     def on_epoch_end(self, epoch: int, logs=None):
         
-        # Sao lưu logs wandb
+        # Fix epoch 0
+        current_epoch = epoch + 1
+        
+        # Save logs 
         wandb.log(logs)
         
         # Checkpoint
-        self.history_checkpoint.append(logs[self.monitor])
         save_model_checkpoint = False
         if self.mode == 'min':
             save_model_checkpoint = min(self.history_checkpoint) >= logs[self.monitor]
         elif self.mode == 'max':
             save_model_checkpoint = max(self.history_checkpoint) <= logs[self.monitor]
+        
+        # Save history_checkpoint
+        self.history_checkpoint.append(logs[self.monitor])
             
-        # Sao lưu mô hình 
-        if self.save_freq > 0 and epoch % self.save_freq == 0 and save_model_checkpoint:
-            path = self.path_logs + self.name_save.format(epoch=epoch+1)
+        # Save weight 
+        if current_epoch >=  self._epoch_save and save_model_checkpoint:
+            path = self.path_logs + self.name_save.format(epoch=current_epoch)
+            self._epoch_save += current_epoch + self.save_freq
             self.model.save_weights(path)
             wandb.save(path)
             if self.verbose == 1:
-                print(f"Save weights epoch {epoch+1} - {path}" )
+                print(f"Save weights epoch {current_epoch} - {path}" )
            
-        # Sao lưu một mẫu âm thanh kiểm tra
+        # Print one data in dev
         tableOutputPredict = wandb.Table(columns=["Epoch", "Input", "Output Target", "Output Pred"])
         for X, Y in self.dataset.take(1):
             if not X.shape[0] == 1:
@@ -66,7 +77,7 @@ class CustomCallbacksWandB(Callback):
         
         image_input_wandb = wandb.Image(tf.squeeze(X).numpy())
             
-        tableOutputPredict.add_data(epoch + 1, image_input_wandb, output_target, output_pred)
+        tableOutputPredict.add_data(current_epoch, image_input_wandb, output_target, output_pred)
         wandb.log({'Predict': tableOutputPredict}) 
         
         
