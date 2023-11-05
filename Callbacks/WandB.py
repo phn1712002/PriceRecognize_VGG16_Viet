@@ -45,23 +45,24 @@ class CustomCallbacksWandB(Callback):
         # Save graph
         if current_epoch == 1: wandb.run.summary["graph"] = wandb.Graph.from_keras(self.model)
         
-        
+
         # Save history_checkpoint
-        self.history_checkpoint.append(logs[self.monitor])
-        
+        self.history_checkpoint.append(int(logs[self.monitor]))
+                
         # Checkpoint
         save_model_checkpoint = False
         if self.mode == 'min':
             save_model_checkpoint = min(self.history_checkpoint) >= logs[self.monitor]
         elif self.mode == 'max':
             save_model_checkpoint = max(self.history_checkpoint) <= logs[self.monitor]
-        
-        
-            
+        else:
+            # Handling for invalid mode
+            raise ValueError("Invalid mode specified")
+      
         # Save weight 
         if current_epoch >=  self._epoch_save and save_model_checkpoint:
             path = self.path_logs + self.name_save.format(epoch=current_epoch)
-            self._epoch_save += current_epoch + self.save_freq
+            self._epoch_save = current_epoch + self.save_freq
             self.model.save_weights(path)
             wandb.save(path)
             if self.verbose == 1:
