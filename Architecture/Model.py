@@ -38,7 +38,7 @@ class VGG16(CustomModel):
 
         
     def build(self, summary=False):
-        strategy = tf.distribute.MirroredStrategy()
+        #strategy = tf.distribute.MirroredStrategy()
         #with strategy.scope():
         #input = Input(shape=self.image_size, name='input')
         
