@@ -192,6 +192,9 @@ class VGG16_TFLite(VGG16):
         self.index_ouput = None
         self.dtype_input = None
         
+        self.time_predict_reality = None
+        self.currency_current = None
+        
         if os.path.exists(path):
             path_json_class_names = path + name_file + '_class_names.json'
             path_json_config = path + name_file + '.json'
@@ -216,28 +219,54 @@ class VGG16_TFLite(VGG16):
         output = super().decoderLable(output_tf)
         return output
     
-    def predict_with_showCam(self, cam: Camera, func_print_info=None, time_send_predict=1, key_stop='q'):
+    def predict_with_showCam(self, cam: Camera, 
+                             func_print_info=None, 
+                             opt_speed_T_or_smooth_F=False, 
+                             key_stop='q', 
+                             setting_text_output={
+                                "fontFace": cv2.FONT_HERSHEY_SIMPLEX, 
+                                "org": (50, 50), 
+                                "fontScale": 1,
+                                "color": (255, 0, 0),
+                                "thickness": 2,
+                                "lineType": cv2.LINE_AA}
+                             ):
         
-        def classification(frame, model, func_print_info):
+        def classification(frame, model: VGG16_TFLite, func_print_info, num_round=2):
+            
+            time_predict_start = time.time()
             currency = model.predict(frame)
-            if func_print_info is None: print(currency)
+            
+            if func_print_info is None: model.currency_current = currency
             else: func_print_info(currency)
-        
+            
+            time_predict_end = time.time()
+            time_predict = time_predict_end - time_predict_start
+            model.time_predict_reality = round(time_predict, num_round)
+            
+        time_send_predict = 1
         check_stop = False
         reset = True
         classification_thread = None
         while not check_stop:
             
-            current_time = time.time() 
+            current_time = time.time()
             if reset:
                 elapsed_time = current_time + time_send_predict
                 reset = False
                 
             frame = cam.getFrame()
-            check_stop = cam.showFrame(frame=frame, name_windown='WebCam', key_stop=key_stop)
+            if not self.currency_current is None: frame = cv2.putText(frame, str(self.currency_current), **setting_text_output)
+            check_stop = cam.showFrame(frame=frame, name_windown='Price VND Recognize', key_stop=key_stop)
             
             if current_time >= elapsed_time:
-                if not classification_thread is None: classification_thread.join()
+                if not classification_thread is None: 
+                    classification_thread.join()
+                    # Opti send
+                    if opt_speed_T_or_smooth_F:
+                        time_send_predict = min(time_send_predict, self.time_predict_reality)
+                    else:
+                        time_send_predict = max(time_send_predict, self.time_predict_reality)
                 classification_thread = threading.Thread(target=classification, args=(frame, self, func_print_info))
                 classification_thread.start()
                 reset = True
