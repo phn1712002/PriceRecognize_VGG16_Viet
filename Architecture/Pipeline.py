@@ -31,19 +31,19 @@ class PriceRecognize_VGG16(VGG16):
         image = cv2.imread(image_path)
         return cv2.resize(image, (self.image_size[0], self.image_size[1]), interpolation=cv2.INTER_AREA)  # check here for image size
     
-    def encoderLable(self, lable):
+    def encoderlabel(self, label):
         label = label.numpy().decode()
         label_seq = self.tokenizer.texts_to_sequences([label])
         label_seq = [item for sublist in label_seq for item in sublist] 
         return to_categorical(label_seq, num_classes=self.num_classes, dtype='int32')
 
-    def mapProcessing(self, path, lable):
-        image = tf.py_function(func=self.load_and_resize_image, inp=[path], Tout=tf.float32)
+    def mapProcessing(self, path, label):
+        image = tf.py_function(func=self.loadImage, inp=[path], Tout=tf.float32)
         if self.check_augments:
-            image = tf.numpy_function(func=self.augment_image, inp=[image], Tout=tf.float32)
+            image = tf.numpy_function(func=self.augmentsImage, inp=[image], Tout=tf.float32)
         image = tf.cast(image/255.0, tf.float32)
         label = tf.py_function(self.encoderLabel, inp=[label], Tout=tf.int32)
-        return image, labe
+        return image, label
     
     def __call__(self, dataset=None, batch_size=1):
         data = (tf.data.Dataset.from_tensor_slices((dataset))
