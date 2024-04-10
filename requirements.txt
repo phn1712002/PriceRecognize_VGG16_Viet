@@ -14,3 +14,4 @@ seaborn
 keyboard
 netron
 git+https://github.com/jarvislabsai/jlclient.git
+pyserial

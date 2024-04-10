@@ -1,6 +1,6 @@
 {
     "config_camera":{
-        "COM": 0,
+        "COM": 1,
         "flip": false,
         "resolution": [1280, 720]
     },

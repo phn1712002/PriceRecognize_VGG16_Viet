@@ -34,6 +34,7 @@ else:
     while True:
         frames = cam.getFrame()
         currency = model.predict(frames)
+        print(f"Currency : {currency}")
         board.writeLCD(currency)
         if keyboard.is_pressed(config_other['key_stop']): break
     

@@ -6,7 +6,7 @@ class Camera:
         self.resolution = resolution
         self.flip = flip
 
-        self.cap = cv2.VideoCapture(self.COM)
+        self.cap = cv2.VideoCapture(self.COM, cv2.CAP_DSHOW)
         if not self.cap.isOpened():
             raise RuntimeError("Camera error")
         else:
