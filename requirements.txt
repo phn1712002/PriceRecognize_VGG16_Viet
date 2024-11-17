@@ -1,0 +1,17 @@
+tensorflow 
+keras 
+albumentations
+opencv-python
+imutils
+numpy
+scikit-learn
+wandb
+tqdm
+pyclean
+psutil
+matplotlib
+seaborn
+keyboard
+netron
+git+https://github.com/jarvislabsai/jlclient.git
+pyserial
