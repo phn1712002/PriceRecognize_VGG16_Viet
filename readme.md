@@ -1,4 +1,4 @@
-# Mã nguồn thiết kế hệ thống nhận diện tiền
+# Mã nguồn thiết kế hệ thống nhận diện tiền việt nam
 ![hoatDong](./Other/working.png)
 
 ### Nội dung
