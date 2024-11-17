@@ -1,6 +1,6 @@
 # Mã nguồn thiết kế hệ thống nhận diện tiền
-![moHinh](./other/base.png)
-![hoatDong](./other/working.png)
+![moHinh](./Other/base.png)
+![hoatDong](./Other/working.png)
 
 ### Nội dung
 1. Sử dụng mô hình Deep learning VGG16
