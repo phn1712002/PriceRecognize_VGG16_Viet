@@ -1,5 +1,4 @@
 # Mã nguồn thiết kế hệ thống nhận diện tiền
-![moHinh](./Other/base.png)
 ![hoatDong](./Other/working.png)
 
 ### Nội dung
